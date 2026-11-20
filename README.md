@@ -43,7 +43,8 @@ src/
 └── client/
     ├── SkillController.client.lua
     ├── PlayerHUD.client.lua
-    └── SprintController.client.lua
+    ├── SprintController.client.lua
+    └── BossHUD.client.lua
 
 default.project.json
 ```
