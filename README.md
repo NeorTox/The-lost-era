@@ -4,7 +4,7 @@ A Roblox anime adventure RPG built with **Luau** for Roblox Studio, targeting mo
 
 ## Project status
 
-This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
+This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
 
 Roblox Studio runtime tests are still required before systems can be considered release-ready.
 
@@ -87,7 +87,7 @@ Maximum level: **300**.
 
 ## Current player interface
 
-- `PlayerHUD.client.lua` displays level, island, coins, health, energy, stamina and XP.
+- `PlayerHUD.client.lua` displays level, island, health, energy, stamina, XP, Coins, Skill Points, Memory Crystals and Void Essence.
 - `SkillController.client.lua` provides a mobile/touch skill hotbar and skill-management panel, plus desktop keys 1, 2 and 3.
 - `SprintController.client.lua` binds sprint to Left Shift on desktop and a ContextActionService touch button on mobile.
 - Health, energy, stamina and progression values are driven by the character and server-synced player attributes.
