@@ -37,6 +37,8 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Verify normal enemy markers outside their island's configured level band are rejected.
 - [ ] Verify boss spawns require the configured boss level and an explicit IsBoss option.
 - [ ] Verify old profile island IDs migrate according to saved level without changing saved level, XP or other profile fields.
+- [ ] Server startup refuses to run if the central 11-island progression table fails its consistency validator.
+- [ ] Invalid, NaN, infinite or out-of-band enemy spawn marker levels are rejected; respawn delays remain within 3–3600 seconds.
 
 ## Player lifecycle and movement
 
