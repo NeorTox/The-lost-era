@@ -196,6 +196,9 @@ function SkillService.Use(player: Player, skillId: any): (boolean, string, any?)
 	if not contains(profile.EquippedSkills, skillId) then
 		return false, "SkillNotEquipped", nil
 	end
+	if not definition.HealPercent and player:GetAttribute("InSafeZone") == true then
+		return false, "SafeZone", nil
+	end
 
 	local now = os.clock()
 	local userCooldowns = cooldowns[player.UserId]
