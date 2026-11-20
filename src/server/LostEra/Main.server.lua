@@ -10,6 +10,7 @@ local QuestService = require(script.Parent.QuestService)
 local CombatService = require(script.Parent.CombatService)
 local RemoteService = require(script.Parent.RemoteService)
 local EnemySpawnService = require(script.Parent.EnemySpawnService)
+local PortalService = require(script.Parent.PortalService)
 
 local function loadPlayer(player: Player)
 	local profile = DataService.LoadPlayer(player)
@@ -50,5 +51,6 @@ end)
 
 RemoteService.Init()
 EnemySpawnService.Init()
+PortalService.Init()
 
 print("[TheLostEra] Core server initialized.")
