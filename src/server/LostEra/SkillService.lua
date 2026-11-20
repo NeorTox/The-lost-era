@@ -64,9 +64,9 @@ function SkillService.SyncPlayer(player: Player)
 		return
 	end
 	player:SetAttribute("SkillPoints", profile.SkillPoints or 0)
-	player:SetAttribute("MaxEnergy", 100)
+	player:SetAttribute("MaxEnergy", Config.BaseMaxEnergy)
 	if typeof(player:GetAttribute("Energy")) ~= "number" then
-		player:SetAttribute("Energy", 100)
+		player:SetAttribute("Energy", Config.BaseMaxEnergy)
 	end
 end
 
