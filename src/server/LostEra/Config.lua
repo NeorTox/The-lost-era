@@ -29,6 +29,26 @@ Config.XPLinearPerLevel = 35
 Config.XPPowerScale = 8
 Config.XPPowerExponent = 1.35
 
+
+-- Reward sources and sinks already present in the first playable loop.
+-- Future systems should add new entries here rather than hard-coding payouts.
+Config.Economy = {
+	EnemyRewards = {
+		XPBase = 15,
+		XPPerLevel = 5,
+		CoinBase = 5,
+		CoinPerLevel = 2,
+	},
+	QuestRewards = {
+		WelcomeToSunsetBay = { XP = 75, Coins = 25 },
+	},
+	Shop = {
+		HealthPotion = { Price = 30, Stock = 99, RequiredLevel = 1 },
+		BronzeSword = { Price = 250, Stock = 1, RequiredLevel = 10 },
+		IronBlade = { Price = 900, Stock = 1, RequiredLevel = 30 },
+	},
+}
+
 -- Canonical 11-island route.
 -- Each island has a normal-enemy level band and a boss challenge level.
 -- The next island opens three levels after the previous island's boss level.
@@ -128,6 +148,45 @@ function Config.ValidateIslandProgression(): (boolean, string?)
 	if Config.Islands[#Config.Islands].BossLevel ~= Config.MaxLevel then
 		return false, "Final island boss must be level 300"
 	end
+	return true, nil
+end
+
+
+function Config.ValidateEconomy(): (boolean, string?)
+	local function isWholeNumber(value: any, allowZero: boolean): boolean
+		return typeof(value) == "number"
+			and value == value
+			and value ~= math.huge
+			and value ~= -math.huge
+			and value == math.floor(value)
+			and (if allowZero then value >= 0 else value > 0)
+	end
+
+	local enemy = Config.Economy.EnemyRewards
+	for _, key in ipairs({ "XPBase", "XPPerLevel", "CoinBase", "CoinPerLevel" }) do
+		if not isWholeNumber(enemy[key], true) then
+			return false, "Invalid enemy reward setting: " .. key
+		end
+	end
+
+	for questId, reward in pairs(Config.Economy.QuestRewards) do
+		if typeof(questId) ~= "string" or typeof(reward) ~= "table"
+			or not isWholeNumber(reward.XP, true)
+			or not isWholeNumber(reward.Coins, true) then
+			return false, "Invalid quest currency reward: " .. tostring(questId)
+		end
+	end
+
+	for itemId, item in pairs(Config.Economy.Shop) do
+		if typeof(itemId) ~= "string" or typeof(item) ~= "table"
+			or not isWholeNumber(item.Price, false)
+			or not isWholeNumber(item.Stock, false)
+			or not isWholeNumber(item.RequiredLevel, true)
+			or item.RequiredLevel > Config.MaxLevel then
+			return false, "Invalid shop definition: " .. tostring(itemId)
+		end
+	end
+
 	return true, nil
 end
 
