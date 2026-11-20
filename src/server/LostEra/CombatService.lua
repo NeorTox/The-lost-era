@@ -25,8 +25,7 @@ end
 
 local function hasLineOfSight(character: Model, origin: Vector3, target: Model, destination: Vector3): boolean
 	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Exclude
-	params.FilterDescendantsInstances = { character, target }
+	params.ExcludeInstances = { character, target }
 	params.IgnoreWater = true
 	return Workspace:Raycast(origin, destination - origin, params) == nil
 end
