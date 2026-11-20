@@ -39,6 +39,12 @@ Config.Economy = {
 		CoinBase = 5,
 		CoinPerLevel = 2,
 	},
+	BossRewards = {
+		TideWarden = {
+			FirstClear = { XP = 250, Coins = 500, MemoryCrystals = 10, ItemId = "TideWardenSigil" },
+			Repeat = { XP = 100, Coins = 180, MemoryCrystals = 0 },
+		},
+	},
 	QuestRewards = {
 		WelcomeToSunsetBay = { XP = 75, Coins = 25 },
 	},
@@ -184,6 +190,25 @@ function Config.ValidateEconomy(): (boolean, string?)
 	for _, key in ipairs({ "XPBase", "XPPerLevel", "CoinBase", "CoinPerLevel" }) do
 		if not isWholeNumber(enemy[key], true) then
 			return false, "Invalid enemy reward setting: " .. key
+		end
+	end
+
+	for bossId, rewards in pairs(Config.Economy.BossRewards) do
+		if typeof(bossId) ~= "string" or typeof(rewards) ~= "table" then
+			return false, "Invalid boss reward definition: " .. tostring(bossId)
+		end
+		for _, rewardKey in ipairs({ "FirstClear", "Repeat" }) do
+			local reward = rewards[rewardKey]
+			if typeof(reward) ~= "table"
+				or not isWholeNumber(reward.XP, true)
+				or not isWholeNumber(reward.Coins, true)
+				or not isWholeNumber(reward.MemoryCrystals, true) then
+				return false, "Invalid " .. rewardKey .. " reward for boss: " .. bossId
+			end
+		end
+		local itemId = rewards.FirstClear.ItemId
+		if itemId ~= nil and (typeof(itemId) ~= "string" or #itemId > 100) then
+			return false, "Invalid first-clear item for boss: " .. bossId
 		end
 	end
 
