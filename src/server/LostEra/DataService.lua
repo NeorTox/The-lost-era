@@ -271,6 +271,7 @@ function DataService.LoadPlayer(player: Player)
 	local token = HttpService:GenerateGUID(false)
 	local key = keyFor(userId)
 	local loadedProfile: {[string]: any}? = nil
+	local loadRefusalReason: string? = nil
 
 	for lockAttempt = 1, LOAD_LOCK_ATTEMPTS do
 		if player.Parent ~= Players then
@@ -280,6 +281,18 @@ function DataService.LoadPlayer(player: Player)
 		local ok, storedValue, keyInfo = updateWithRetries(
 			key,
 			function(oldValue, currentKeyInfo)
+				if oldValue ~= nil and typeof(oldValue) ~= "table" then
+					loadRefusalReason = "Stored profile has an unsupported data shape"
+					return nil
+				end
+				if typeof(oldValue) == "table" then
+					local storedSchemaVersion = tonumber(oldValue.SchemaVersion) or 1
+					if storedSchemaVersion > 3 then
+						loadRefusalReason = "Stored profile was written by a newer game schema"
+						return nil
+					end
+				end
+
 				local metadata = copyMetadata(currentKeyInfo)
 				local existingToken = metadata.SessionLockId
 				local lastRefresh = tonumber(metadata.SessionLockUpdatedAt)
@@ -298,7 +311,7 @@ function DataService.LoadPlayer(player: Player)
 			"Profile load/lock"
 		)
 
-		if not ok then
+		if not ok or loadRefusalReason then
 			break
 		end
 
@@ -328,8 +341,8 @@ function DataService.LoadPlayer(player: Player)
 
 	loading[userId] = nil
 	if player.Parent == Players then
-		warn("[TheLostEra] Profile load was not completed; refusing to create an unlocked default session:", userId)
-		player:Kick("Your data is still active on another server or could not be reached. Please rejoin shortly.")
+		warn("[TheLostEra] Profile load was not completed:", userId, loadRefusalReason or "An active session lock or DataStore error prevented access.")
+		player:Kick("Your data could not be safely loaded. Please rejoin shortly.")
 	end
 	return nil
 end
