@@ -4,7 +4,7 @@ Create `Workspace/NPCs` and place NPC character Models inside it. Each model nee
 
 Configured starter NPCs:
 - `SunsetGuide` — Mira, Island Guide; offers `WelcomeToSunsetBay`.
-- `SunsetMerchant` — Toma, Supply Merchant; sells HealthPotion for 30 coins.
+- `SunsetMerchant` — Toma, Supply Merchant; sells HealthPotion for 30 coins, BronzeSword for 250 coins (level 10), and IronBlade for 900 coins (level 30).
 
 Both currently belong to `SunsetBay`. Model attributes must match these IDs exactly.
 
