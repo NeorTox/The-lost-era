@@ -22,7 +22,7 @@ Only one Tide Warden encounter can be active on Sunset Bay per Roblox server ins
 
 ## Combat phases
 
-The boss uses the ordinary server-authoritative enemy movement and melee loop, with its combat attributes changed by health thresholds.
+The boss uses the ordinary server-authoritative enemy movement and melee loop, with its combat attributes changed by health thresholds. Boss targeting, movement pursuit and Tide Slam impact checks are constrained to the generated BossArenaPlatform bounds; a player who leaves the arena can disengage rather than being chased across the island.
 
 | Phase | Health threshold | Name | Melee damage | Melee cooldown | Walk speed |
 |---:|---:|---|---:|---:|---:|
@@ -76,7 +76,8 @@ The completion ID is stored in `BossCompletions` on the player profile. Existing
 ## Current boundaries
 
 - The fallback Tide Warden is a recolored R6 blockout rig, not final boss art.
-- The fight has no custom animation, audio, camera sequence, arena lockdown, cutscene or dedicated mobile boss bar yet.
+- A responsive client-side boss health and phase HUD is included for PC and mobile, but has not yet been verified in Roblox Studio.
+- The fight has no custom animation, audio, camera sequence, arena entry/exit lockdown or cutscene.
 - Boss health is currently fixed rather than scaled by party size.
 - The encounter is shared by players on the same island within one server instance; separate Roblox servers can each host their own encounter. It is not instanced per party.
 - The other ten boss markers remain disabled and do not have authored boss definitions.
@@ -103,3 +104,5 @@ The completion ID is stored in `BossCompletions` on the player profile. Existing
 16. Confirm the summon prompt remains disabled during the 180-second cooldown and becomes available afterward.
 17. Destroy an active boss model during a test and verify the encounter resets without leaving the island permanently locked.
 18. Run a multiplayer test with one safe-zone player, one arena player and one player on another island.
+19. Verify the boss returns to its arena and does not pursue players who leave the platform bounds.
+20. Verify the responsive boss HUD appears only for players on the encounter island, updates health and phase, and hides after the boss is removed.
