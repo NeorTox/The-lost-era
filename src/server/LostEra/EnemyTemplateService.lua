@@ -167,17 +167,18 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "EnemyNameplate"
 	billboard.Adornee = head
-	billboard.Size = UDim2.fromOffset(164, 34)
-	billboard.StudsOffset = Vector3.new(0, 1.35, 0)
+	billboard.Size = UDim2.fromOffset(180, 48)
+	billboard.StudsOffset = Vector3.new(0, 2.1, 0)
 	billboard.AlwaysOnTop = true
-	billboard.MaxDistance = 100
+	billboard.MaxDistance = 110
 	billboard.Parent = head
 
 	local label = Instance.new("TextLabel")
 	label.Name = "Name"
-	label.Size = UDim2.fromScale(1, 1)
+	label.Position = UDim2.fromOffset(0, 0)
+	label.Size = UDim2.new(1, 0, 0, 23)
 	label.BackgroundColor3 = Color3.fromRGB(18, 25, 36)
-	label.BackgroundTransparency = 0.18
+	label.BackgroundTransparency = 0.12
 	label.BorderSizePixel = 0
 	label.Font = Enum.Font.GothamBold
 	label.Text = definition.DisplayName
@@ -185,9 +186,33 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 	label.TextScaled = true
 	label.Parent = billboard
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 7)
-	corner.Parent = label
+	local labelCorner = Instance.new("UICorner")
+	labelCorner.CornerRadius = UDim.new(0, 7)
+	labelCorner.Parent = label
+
+	local healthTrack = Instance.new("Frame")
+	healthTrack.Name = "HealthTrack"
+	healthTrack.Position = UDim2.fromOffset(10, 30)
+	healthTrack.Size = UDim2.new(1, -20, 0, 10)
+	healthTrack.BackgroundColor3 = Color3.fromRGB(48, 54, 64)
+	healthTrack.BorderSizePixel = 0
+	healthTrack.ClipsDescendants = true
+	healthTrack.Parent = billboard
+
+	local trackCorner = Instance.new("UICorner")
+	trackCorner.CornerRadius = UDim.new(1, 0)
+	trackCorner.Parent = healthTrack
+
+	local fill = Instance.new("Frame")
+	fill.Name = "Fill"
+	fill.Size = UDim2.fromScale(1, 1)
+	fill.BackgroundColor3 = Color3.fromRGB(78, 205, 112)
+	fill.BorderSizePixel = 0
+	fill.Parent = healthTrack
+
+	local fillCorner = Instance.new("UICorner")
+	fillCorner.CornerRadius = UDim.new(1, 0)
+	fillCorner.Parent = fill
 
 	model.PrimaryPart = root
 	model.Parent = folder
