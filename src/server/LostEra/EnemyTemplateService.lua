@@ -6,6 +6,8 @@
 local ServerStorage = game:GetService("ServerStorage")
 local EnemyCatalog = require(script.Parent.EnemyCatalog)
 
+type EnemyDefinition = EnemyCatalog.EnemyDefinition
+
 local EnemyTemplateService = {}
 local initialized = false
 
@@ -50,7 +52,7 @@ local function addMotor(
 	motor.Parent = part0
 end
 
-local function createGeneratedTemplate(folder: Folder, definition)
+local function createGeneratedTemplate(folder: Folder, definition: EnemyDefinition)
 	local model = Instance.new("Model")
 	model.Name = definition.TemplateName
 	model:SetAttribute("EnemyTemplateId", definition.TemplateName)
