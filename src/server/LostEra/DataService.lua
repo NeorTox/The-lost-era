@@ -122,7 +122,14 @@ local function sanitizeProfile(raw: any)
 	profile.XP = if rawXP == rawXP and rawXP < math.huge then math.max(0, math.floor(rawXP)) else 0
 	local rawCoins = tonumber(raw.Coins) or 0
 	profile.Coins = if rawCoins == rawCoins and rawCoins < math.huge then math.max(0, math.floor(rawCoins)) else 0
-	profile.CurrentIsland = if typeof(raw.CurrentIsland) == "string" and Config.GetIslandById(raw.CurrentIsland) then raw.CurrentIsland else "SunsetBay"
+	-- Preserve valid saved islands. Retired prototype IDs or islands above the
+	-- player's current unlock level resolve to the highest island they can access.
+	local savedIsland = if typeof(raw.CurrentIsland) == "string" then Config.GetIslandById(raw.CurrentIsland) else nil
+	if savedIsland and profile.Level >= savedIsland.UnlockLevel then
+		profile.CurrentIsland = savedIsland.Id
+	else
+		profile.CurrentIsland = Config.GetIslandForLevel(profile.Level).Id
+	end
 	profile.Inventory = sanitizeInventory(raw.Inventory)
 	profile.CompletedQuests = sanitizeStringArray(raw.CompletedQuests)
 	profile.QuestProgress = sanitizeQuestProgress(raw.QuestProgress)
