@@ -27,7 +27,8 @@ local function findNearestPlayer(position: Vector3, islandId: string, maxDistanc
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 		local root = character and character:FindFirstChild("HumanoidRootPart")
 		if humanoid and humanoid.Health > 0 and root and root:IsA("BasePart")
-			and player:GetAttribute("CurrentIsland") == islandId then
+			and player:GetAttribute("CurrentIsland") == islandId
+			and player:GetAttribute("InSafeZone") ~= true then
 			local distance = (root.Position - position).Magnitude
 			if distance < nearestDistance then
 				nearest = player
