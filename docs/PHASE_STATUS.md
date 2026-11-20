@@ -12,7 +12,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 6 | World and Island Construction | Greybox generated in source; art/content incomplete | Runtime world builder creates the Central Area, 11 themed greybox islands, Echo Battle Arena and Memory Training Island; portal, spawn, quest/shop, active safe-zone, boss and treasure markers exist; collectible interactions, complete NPC/enemy rosters, terrain art and Studio validation remain |
 | 7 | Portal and Travel | Partial | Hub portals to all 11 islands and both special areas plus return portals are generated; saved-location placement and level checks are wired; portal UI feedback and Studio travel tests remain |
 | 8 | Combat | Partial | Server-validated basic melee and skill attacks exist; combos, weapon feel, effects and full combat balancing remain |
-| 9 | Enemy System | Partial | Basic enemy service, AI and spawn markers exist; complete enemy roster, behavior, drops and world integration remain |
+| 9 | Enemy System | Partial | Three Sunset Bay enemy types, fallback R6 blockout templates, active spawn markers, leash-aware same-island AI, safe-zone checks, inventory material drops and post-defeat respawns are implemented in source; other island rosters, authored rigs, effects, balance and Studio runtime tests remain |
 | 10 | Boss System | Not implemented | Boss AI, phases, attacks, rewards and arenas remain |
 | 11 | Weapon System | Partial | Training Blade, Bronze Sword and Iron Blade plus server equip/stats exist; full weapon roster, skills, animations and drops remain |
 | 12 | Armor and Equipment | Not implemented | Armor slots, stats, sets, equipment UI and persistence remain |
@@ -46,7 +46,11 @@ The current work focused on closing the most important early-game foundation gap
 - Quest objective progress already lives in the profile and is included in save snapshots.
 - Player data now migrates additively from schema v3 to schema v4 with persistent Memory Crystal and Void Essence balances defaulting to zero.
 - The canonical 11-island progression schedule is centralized in Config.lua; old island IDs fall back to the highest island unlocked by the saved player level.
-- Enemy spawn markers and enemy spawning now validate island IDs and level bands against the shared progression configuration.
+- Enemy spawn markers and enemy spawning now validate island IDs and whole-number level bands against the shared progression configuration.
+- EnemyCatalog defines three distinct Sunset Bay enemies; EnemyTemplateService supplies simple fallback R6 blockout rigs only when art-authored templates are absent.
+- The three Sunset Bay spawn markers are enabled and assigned to TrainingSlime (level 1), DriftwoodBandit (level 12) and TideCrab (level 24); spawn markers on the other ten islands remain disabled.
+- Enemy AI targets only players on its island, excludes safe-zone players, checks protection again before damage, and returns to its home position when targets leave its chase leash.
+- Enemy defeats award configured XP/Coins and have a chance to add Slime Gel, Driftwood Scrap or Tide Shell directly to the killer's inventory; respawn delay starts after the old model is removed.
 - Existing enemy and quest reward values plus shop prices are centralized in Config.Economy and validated at server startup; Memory Crystal and Void Essence are reserved for future systems.
 - WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems. Enemy markers remain disabled until matching rig templates are authored.
 - SafeZoneService tracks player proximity; enemies ignore protected players, and basic attacks/offensive skills are rejected from safe zones while healing remains available.
