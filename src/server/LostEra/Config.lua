@@ -7,6 +7,7 @@ Config.DataStoreName = "TheLostEra_PlayerData_v1"
 Config.DataStoreKeyPrefix = "player_"
 Config.AutoSaveInterval = 60
 Config.MaxLevel = 300
+Config.MaxCurrencyBalance = 9007199254740991
 Config.StartingLevel = 1
 Config.StartingXP = 0
 Config.StartingCoins = 0
