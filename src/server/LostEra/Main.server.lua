@@ -16,6 +16,24 @@ local WeaponService = require(script.Parent.WeaponService)
 local CharacterService = require(script.Parent.CharacterService)
 local WorldBuilderService = require(script.Parent.WorldBuilderService)
 
+local progressionValid, progressionError = Config.ValidateIslandProgression()
+if not progressionValid then
+	error("[TheLostEra] Invalid island progression configuration: " .. tostring(progressionError))
+end
+
+local economyValid, economyError = Config.ValidateEconomy()
+if not economyValid then
+	error("[TheLostEra] Invalid economy configuration: " .. tostring(economyError))
+end
+
+-- Build the service contract folders before the portal and spawn services scan Workspace.
+WorldBuilderService.Init()
+RemoteService.Init()
+EnemySpawnService.Init()
+PortalService.Init()
+
+print("[TheLostEra] Core server initialized.")
+
 local function loadPlayer(player: Player)
 	local profile = DataService.LoadPlayer(player)
 	if not profile then
@@ -65,20 +83,4 @@ game:BindToClose(function()
 	DataService.ReleaseAll()
 end)
 
-local progressionValid, progressionError = Config.ValidateIslandProgression()
-if not progressionValid then
-	error("[TheLostEra] Invalid island progression configuration: " .. tostring(progressionError))
-end
 
-local economyValid, economyError = Config.ValidateEconomy()
-if not economyValid then
-	error("[TheLostEra] Invalid economy configuration: " .. tostring(economyError))
-end
-
--- Build the service contract folders before the portal and spawn services scan Workspace.
-WorldBuilderService.Init()
-RemoteService.Init()
-EnemySpawnService.Init()
-PortalService.Init()
-
-print("[TheLostEra] Core server initialized.")
