@@ -5,6 +5,7 @@ local CombatService = require(script.Parent.CombatService)
 local NPCService = require(script.Parent.NPCService)
 local SkillService = require(script.Parent.SkillService)
 local WeaponService = require(script.Parent.WeaponService)
+local CharacterService = require(script.Parent.CharacterService)
 
 local RemoteService = {}
 
@@ -30,6 +31,9 @@ end
 
 function RemoteService.Init()
 	local folder = getFolder(ReplicatedStorage, "TheLostEraRemotes")
+	getRemote(folder, "SprintRequest").OnServerEvent:Connect(function(player: Player, shouldSprint: any)
+		CharacterService.SetSprinting(player, shouldSprint)
+	end)
 	getRemote(folder, "AttackRequest").OnServerEvent:Connect(function(player: Player, target: Instance)
 		CombatService.TryAttack(player, target)
 	end)
