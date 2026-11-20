@@ -155,6 +155,7 @@ local function startAI(enemy: Model)
 								and target.Character == targetCharacter
 								and targetHumanoid.Health > 0
 								and (targetRoot.Position - root.Position).Magnitude <= attackRange + 1
+								and isInsideArena(targetRoot.Position, arenaCenter, arenaSize)
 								and hasLineOfSight(enemy, targetCharacter, root.Position, targetRoot.Position) then
 								targetHumanoid:TakeDamage(attackDamage)
 							end
