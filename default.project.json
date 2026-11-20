@@ -1,0 +1,12 @@
+{
+  "name": "TheLostEra",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "LostEra": {
+        "$path": "src/server/LostEra"
+      }
+    }
+  }
+}
