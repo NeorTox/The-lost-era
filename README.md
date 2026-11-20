@@ -4,7 +4,7 @@ A Roblox RPG built with **Luau** for Roblox Studio.
 
 ## Project status
 
-This repository is the source of truth for the game. Development is being built in tested milestones. The current source includes server-validated gameplay systems, session-locked player persistence, level progression, inventory, starter quests, melee combat, basic enemy AI, configurable enemy spawn markers, character lifecycle defaults, and stamina-based sprinting. Roblox Studio runtime tests are still required before a release-ready status can be claimed.
+This repository is the source of truth for the game. Development is being built in incremental milestones; runtime completion is only claimed after Roblox Studio testing. The current source includes server-validated gameplay systems, session-locked player persistence, level progression, inventory, starter quests, melee combat, basic enemy AI, configurable enemy spawn markers, character lifecycle defaults, and stamina-based sprinting. Roblox Studio runtime tests are still required before a release-ready status can be claimed.
 
 ## Development environment
 
@@ -16,20 +16,27 @@ This repository is the source of truth for the game. Development is being built 
 
 ```text
 src/
-└── server/
-    └── LostEra/
-        ├── Config.lua
-        ├── CharacterService.lua
-        ├── DataService.lua
-        ├── ProgressionService.lua
-        ├── InventoryService.lua
-        ├── QuestService.lua
-        ├── EnemyService.lua
-        ├── EnemySpawnService.lua
-        ├── CombatService.lua
-        ├── RemoteService.lua
-        ├── Main.server.lua
-        └── RemoteService.lua
+├── server/
+│   └── LostEra/
+│       ├── Config.lua
+│       ├── CharacterService.lua
+│       ├── DataService.lua
+│       ├── ProgressionService.lua
+│       ├── InventoryService.lua
+│       ├── QuestService.lua
+│       ├── EnemyService.lua
+│       ├── EnemySpawnService.lua
+│       ├── CombatService.lua
+│       ├── PortalService.lua
+│       ├── WeaponService.lua
+│       ├── SkillService.lua
+│       ├── NPCService.lua
+│       ├── RemoteService.lua
+│       └── Main.server.lua
+└── client/
+    ├── SkillController.client.lua
+    └── SprintController.client.lua
+
 default.project.json
 ```
 
@@ -42,18 +49,25 @@ default.project.json
 5. In Studio, enable **Game Settings → Security → Enable Studio Access to API Services** only for a test experience when testing DataStores.
 6. Publish the experience to Roblox before expecting production DataStore persistence.
 
-## Initial progression map
+## Canonical world roster
 
-| Island | Unlock level | Enemy levels | Boss level |
-|---|---:|---:|---:|
-| Sunset Bay | 1 | 1–35 | 40 |
-| Pixel City | 40 | 40–75 | 80 |
-| Clockwork Kingdom | 80 | 80–115 | 120 |
-| Emerald Jungle | 120 | 120–155 | 160 |
-| Dragon Volcano | 160 | 160–205 | 210 |
-| Sky Realm | 210 | 210–255 | 260 |
-| Forgotten Kingdom | 260 | 260–275 | 280 |
-| Eternal Abyss | 280 | 280–295 | 300 |
+The current world specification contains 11 main islands, in this order:
+
+1. Sunset Bay
+2. Pixel City
+3. Forgotten Academy
+4. Clockwork Kingdom
+5. The Lost Era
+6. Emerald Jungle
+7. Frozen Kingdom
+8. Dragon Volcano
+9. Sky Realm
+10. Atlantis Island
+11. Haunted Island
+
+Additional areas: Echo Battle Arena and Memory Training Island.
+
+The 11-island roster supersedes the earlier eight-island prototype map. New unlock levels and enemy/boss ranges are intentionally not assigned in the code until the revised level progression is approved.
 
 Maximum level: **300**.
 
