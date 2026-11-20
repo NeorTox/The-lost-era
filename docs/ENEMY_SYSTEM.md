@@ -54,3 +54,6 @@ Stats, names, colors and drops live in `src/server/LostEra/EnemyCatalog.lua`. En
 7. Confirm defeated enemies are removed, then respawn after the configured 18-second delay begins.
 8. Disable a spawn marker during a live encounter and verify its enemy is removed without the marker restarting unexpectedly.
 9. Test with multiple players, including one inside the safe zone and another fighting outside it.
+10. Verify Bandit and Crab kills do not increment the Training Slime quest, while Training Slime kills do.
+11. Verify enemy health bars decrease correctly and change color at the configured health thresholds.
+12. Place a solid obstacle between an enemy and player; verify the enemy cannot damage through it.
