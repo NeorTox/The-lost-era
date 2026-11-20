@@ -1,5 +1,5 @@
 --!strict
--- Compact player HUD for health, energy, stamina, XP, level, island and coins.
+-- Compact player HUD for health, energy, stamina, XP, level, island and all currencies.
 
 local Players = game:GetService("Players")
 
@@ -92,6 +92,42 @@ coinLabel.TextColor3 = Color3.fromRGB(255, 213, 117)
 coinLabel.TextSize = 10
 coinLabel.TextXAlignment = Enum.TextXAlignment.Right
 coinLabel.Parent = header
+
+local skillPointsLabel = Instance.new("TextLabel")
+skillPointsLabel.Name = "SkillPoints"
+skillPointsLabel.Position = UDim2.fromOffset(0, 160)
+skillPointsLabel.Size = UDim2.new(1 / 3, -4, 0, 14)
+skillPointsLabel.BackgroundTransparency = 1
+skillPointsLabel.Font = Enum.Font.GothamBold
+skillPointsLabel.Text = "SP 0"
+skillPointsLabel.TextColor3 = Color3.fromRGB(169, 190, 235)
+skillPointsLabel.TextSize = 9
+skillPointsLabel.TextXAlignment = Enum.TextXAlignment.Left
+skillPointsLabel.Parent = panel
+
+local memoryCrystalsLabel = Instance.new("TextLabel")
+memoryCrystalsLabel.Name = "MemoryCrystals"
+memoryCrystalsLabel.Position = UDim2.new(1 / 3, 0, 0, 160)
+memoryCrystalsLabel.Size = UDim2.new(1 / 3, -4, 0, 14)
+memoryCrystalsLabel.BackgroundTransparency = 1
+memoryCrystalsLabel.Font = Enum.Font.GothamBold
+memoryCrystalsLabel.Text = "MEM 0"
+memoryCrystalsLabel.TextColor3 = Color3.fromRGB(130, 218, 231)
+memoryCrystalsLabel.TextSize = 9
+memoryCrystalsLabel.TextXAlignment = Enum.TextXAlignment.Center
+memoryCrystalsLabel.Parent = panel
+
+local voidEssenceLabel = Instance.new("TextLabel")
+voidEssenceLabel.Name = "VoidEssence"
+voidEssenceLabel.Position = UDim2.new(2 / 3, 0, 0, 160)
+voidEssenceLabel.Size = UDim2.new(1 / 3, 0, 0, 14)
+voidEssenceLabel.BackgroundTransparency = 1
+voidEssenceLabel.Font = Enum.Font.GothamBold
+voidEssenceLabel.Text = "VOID 0"
+voidEssenceLabel.TextColor3 = Color3.fromRGB(196, 151, 239)
+voidEssenceLabel.TextSize = 9
+voidEssenceLabel.TextXAlignment = Enum.TextXAlignment.Right
+voidEssenceLabel.Parent = panel
 
 local function makeBar(name: string, title: string, y: number, fillColor: Color3)
 	local label = Instance.new("TextLabel")
@@ -218,9 +254,15 @@ local function updateProgress()
 	local xp = safeNumber(player:GetAttribute("XP"), 0)
 	local xpNeeded = safeNumber(player:GetAttribute("XPToNextLevel"), 0)
 	local coins = safeNumber(player:GetAttribute("Coins"), 0)
+	local skillPoints = safeNumber(player:GetAttribute("SkillPoints"), 0)
+	local memoryCrystals = safeNumber(player:GetAttribute("MemoryCrystals"), 0)
+	local voidEssence = safeNumber(player:GetAttribute("VoidEssence"), 0)
 
 	levelLabel.Text = "LVL " .. tostring(level)
 	coinLabel.Text = string.format("%s COINS", tostring(math.floor(coins)))
+	skillPointsLabel.Text = "SP " .. tostring(math.floor(skillPoints))
+	memoryCrystalsLabel.Text = "MEM " .. tostring(math.floor(memoryCrystals))
+	voidEssenceLabel.Text = "VOID " .. tostring(math.floor(voidEssence))
 	islandLabel.Text = string.upper(tostring(player:GetAttribute("CurrentIsland") or "CENTRAL AREA"))
 
 	if xpNeeded > 0 then
@@ -282,6 +324,9 @@ local attributes = {
 	"XP",
 	"XPToNextLevel",
 	"Coins",
+	"SkillPoints",
+	"MemoryCrystals",
+	"VoidEssence",
 	"CurrentIsland",
 }
 for _, attribute in ipairs(attributes) do
