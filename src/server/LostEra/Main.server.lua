@@ -68,6 +68,11 @@ if not progressionValid then
 	error("[TheLostEra] Invalid island progression configuration: " .. tostring(progressionError))
 end
 
+local economyValid, economyError = Config.ValidateEconomy()
+if not economyValid then
+	error("[TheLostEra] Invalid economy configuration: " .. tostring(economyError))
+end
+
 RemoteService.Init()
 EnemySpawnService.Init()
 PortalService.Init()
