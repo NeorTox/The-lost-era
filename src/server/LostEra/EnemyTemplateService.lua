@@ -75,6 +75,8 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 		CFrame.new(0, 3, 0),
 		definition.BodyColor
 	)
+	torso.CanCollide = true
+
 	local head = createPart(
 		model,
 		"Head",
@@ -114,6 +116,8 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 		CFrame.new(0.5, 1, 0),
 		definition.BodyColor
 	)
+	leftLeg.CanCollide = true
+	rightLeg.CanCollide = true
 
 	addMotor("RootJoint", root, torso, CFrame.new(), CFrame.new())
 	addMotor("Neck", torso, head, CFrame.new(0, 1, 0), CFrame.new(0, -0.5, 0))
