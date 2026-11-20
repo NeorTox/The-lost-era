@@ -380,7 +380,7 @@ local function buildArea(
 		local summonPoint = ensureMarker(
 			ensureFolder(Workspace, "BossSummonPoints"),
 			"Generated_" .. locationId,
-			bossCenter + Vector3.new(0, 8, -35),
+			bossCenter + Vector3.new(0, 8, -8),
 			{
 				IslandId = locationId,
 				BossId = bossTemplateName,
