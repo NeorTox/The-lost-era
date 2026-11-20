@@ -6,6 +6,7 @@ local Players = game:GetService("Players")
 local Config = require(script.Parent.Config)
 local DataService = require(script.Parent.DataService)
 local ProgressionService = require(script.Parent.ProgressionService)
+local QuestService = require(script.Parent.QuestService)
 
 local function loadPlayer(player: Player)
 	local profile = DataService.LoadPlayer(player)
@@ -26,6 +27,7 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 Players.PlayerRemoving:Connect(function(player)
+	QuestService.ReleasePlayer(player)
 	DataService.ReleasePlayer(player)
 end)
 
