@@ -255,6 +255,7 @@ function SkillService.Use(player: Player, skillId: any): (boolean, string, any?)
 			local enemyRoot = enemy:FindFirstChild("HumanoidRootPart")
 			if enemyHumanoid and enemyHumanoid.Health > 0 and enemyRoot and enemyRoot:IsA("BasePart")
 				and (enemyRoot.Position - root.Position).Magnitude <= definition.Radius
+				and (enemy:GetAttribute("IsBoss") ~= true or BossService.CanPlayerDamage(player, enemy))
 				and hasLineOfSight(character, enemy, root.Position, enemyRoot.Position) then
 				hitEnemies[enemy] = true
 				enemy:SetAttribute("LastHitUserId", player.UserId)
