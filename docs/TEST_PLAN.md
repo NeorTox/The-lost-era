@@ -137,4 +137,4 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 
 ## Known implementation boundary
 
-The generated world is a greybox, not final terrain/art. Enemy templates, BossService, safe-zone enforcement, treasure collection interactions, full island NPC/quest/shop rosters, the complete inventory/quest/shop UI, animation assets and in-Studio multiplayer tests still need to be created/performed. The existing skill menu/hotbar, player HUD and sprint touch action are only the currently implemented portion of the interface. This plan is a test checklist, not a claim that those tests have passed.
+The generated world is a greybox, not final terrain/art. Enemy templates, BossService, safe-zone PvP rules, treasure collection interactions, full island NPC/quest/shop rosters, the complete inventory/quest/shop UI, animation assets and in-Studio multiplayer tests still need to be created/performed. The existing skill menu/hotbar, player HUD and sprint touch action are only the currently implemented portion of the interface. This plan is a test checklist, not a claim that those tests have passed.
