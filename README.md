@@ -4,7 +4,7 @@ A Roblox anime adventure RPG built with **Luau** for Roblox Studio, targeting mo
 
 ## Project status
 
-This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, a three-enemy Sunset Bay starter roster with generated blockout rigs, leash-aware AI, material drops and active spawn markers, portal handling, a procedural Central Area/11-island/special-area greybox builder with active safe zones, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
+This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, a three-enemy Sunset Bay starter roster with generated blockout rigs, leash-aware AI, material drops and active spawn markers, a first Tide Warden boss encounter with phase attacks and persistent first-clear rewards, portal handling, a procedural Central Area/11-island/special-area greybox builder with active safe zones, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
 
 Roblox Studio runtime tests are still required before systems can be considered release-ready.
 
