@@ -74,7 +74,7 @@ The current world specification contains 11 main islands, in this order:
 
 Additional areas: Echo Battle Arena and Memory Training Island.
 
-The 11-island roster supersedes the earlier eight-island prototype map. New unlock levels and enemy/boss ranges are intentionally not assigned in the code until the replacement progression schedule is finalized.
+The 11-island roster supersedes the earlier eight-island prototype map. Its initial level unlocks, normal enemy bands and boss challenge levels are documented in [docs/PROGRESSION_DESIGN.md](docs/PROGRESSION_DESIGN.md) and centralized in Config.lua.
 
 Maximum level: **300**.
 
@@ -98,4 +98,4 @@ The server configures baseline health, walk speed and jump power on spawned char
 
 ## Roadmap
 
-The full 29-phase master checklist is tracked in [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md). Immediate priorities are private Roblox Studio validation of player lifecycle and persistence, then completion of the 11-island progression map and world foundation.
+The full 29-phase master checklist is tracked in [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md). Immediate priorities are private Roblox Studio validation of player lifecycle and persistence, then Roblox Studio validation and the staged construction of the 11-island world.
