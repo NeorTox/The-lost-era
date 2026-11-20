@@ -410,15 +410,16 @@ local function buildArea(
 		local island = Config.Islands[index]
 		local enemyFolder = ensureFolder(Workspace, "EnemySpawnPoints")
 		local offsets = {
-			Vector3.new(-72, surfaceY + 2, 62),
-			Vector3.new(72, surfaceY + 2, 62),
-			Vector3.new(0, surfaceY + 2, -88),
+			Vector3.new(-72, surfaceY + 3, 62),
+			Vector3.new(72, surfaceY + 3, 62),
+			Vector3.new(0, surfaceY + 3, -88),
 		}
+		local sunsetBayTemplates = { "TrainingSlime", "DriftwoodBandit", "TideCrab" }
 		for spawnIndex, offset in ipairs(offsets) do
 			local level = island.EnemyLevelMin
 				+ math.floor((island.EnemyLevelMax - island.EnemyLevelMin) * ((spawnIndex - 1) / 2))
 			local templateName = if locationId == "SunsetBay"
-				then "TrainingSlime"
+				then sunsetBayTemplates[spawnIndex]
 				else "TODO_" .. locationId .. "_Enemy_" .. tostring(spawnIndex)
 			ensureMarker(
 				enemyFolder,
@@ -429,7 +430,7 @@ local function buildArea(
 					Level = level,
 					IslandId = locationId,
 					RespawnSeconds = 18,
-					Enabled = false,
+					Enabled = locationId == "SunsetBay",
 					MarkerType = "EnemySpawn",
 				}
 			)
