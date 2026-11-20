@@ -115,6 +115,7 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Start a fresh server and confirm Workspace/TheLostEraGeneratedWorld contains the Central Area, all 11 canonical islands, Echo Battle Arena and Memory Training Island.
 - [ ] Confirm Workspace/IslandSpawns contains a Spawn part for CentralArea, each main island and each special area.
 - [ ] Confirm the player initially spawns on Sunset Bay after profile load and returns to their saved location after rejoining.
+- [ ] Confirm island spawn markers are placed just above the top surface of their platform, not floating above or embedded in the platform.
 - [ ] Confirm a respawn returns the player to their current island or special area, not always to the hub.
 - [ ] Confirm the hub has a portal for every main island and both special areas.
 - [ ] Confirm every main island and special area has a return portal to CentralArea.
