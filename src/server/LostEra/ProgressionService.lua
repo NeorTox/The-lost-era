@@ -70,6 +70,17 @@ function ProgressionService.AddCoins(player: Player, amount: number): boolean
 	return true
 end
 
+function ProgressionService.SpendCoins(player: Player, amount: number): (boolean, string?)
+	local profile = DataService.GetProfile(player)
+	if not profile then return false, "ProfileUnavailable" end
+	local cost = math.floor(amount)
+	if cost <= 0 then return false, "InvalidAmount" end
+	if profile.Coins < cost then return false, "InsufficientCoins" end
+	profile.Coins -= cost
+	player:SetAttribute("Coins", profile.Coins)
+	return true, nil
+end
+
 function ProgressionService.CanAccessIsland(player: Player, islandId: string): boolean
 	local profile = DataService.GetProfile(player)
 	local island = Config.GetIslandById(islandId)
