@@ -119,8 +119,8 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 	addMotor("Neck", torso, head, CFrame.new(0, 1, 0), CFrame.new(0, -0.5, 0))
 	addMotor("Left Shoulder", torso, leftArm, CFrame.new(-1, 0.5, 0), CFrame.new(0.5, 0.5, 0))
 	addMotor("Right Shoulder", torso, rightArm, CFrame.new(1, 0.5, 0), CFrame.new(-0.5, 0.5, 0))
-	addMotor("Left Hip", torso, leftLeg, CFrame.new(-1, -1, 0), CFrame.new(0, 1, 0))
-	addMotor("Right Hip", torso, rightLeg, CFrame.new(1, -1, 0), CFrame.new(0, 1, 0))
+	addMotor("Left Hip", torso, leftLeg, CFrame.new(-1, -1, 0), CFrame.new(-0.5, 1, 0))
+	addMotor("Right Hip", torso, rightLeg, CFrame.new(1, -1, 0), CFrame.new(0.5, 1, 0))
 
 	local accentPlate = createPart(
 		model,
