@@ -504,8 +504,10 @@ local function buildCentralArea(world: Folder, spawnFolders: Folder, portalFolde
 	spawnLocation.Neutral = true
 	spawnLocation.AllowTeamChangeOnTouch = false
 	spawnLocation.Duration = 0
-	spawnLocation.Color = Color3.fromRGB(116, 190, 216)
-	spawnLocation.Material = Enum.Material.Neon
+	spawnLocation.Transparency = 1
+	spawnLocation.CanCollide = false
+	spawnLocation.CanTouch = false
+	spawnLocation.CanQuery = false
 	spawnLocation.Parent = hub
 
 	local hubSpawnPad = createPart(
