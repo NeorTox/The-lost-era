@@ -9,17 +9,28 @@ local MAX_STACK = 999
 local ItemDefinitions = {
 	HealthPotion = { DisplayName = "Health Potion", Stackable = true, MaxStack = 99 },
 	SmallCoinPouch = { DisplayName = "Small Coin Pouch", Stackable = true, MaxStack = 99 },
+	TrainingBlade = { DisplayName = "Training Blade", Stackable = false, MaxStack = 1, IsWeapon = true },
+	BronzeSword = { DisplayName = "Bronze Sword", Stackable = false, MaxStack = 1, IsWeapon = true },
+	IronBlade = { DisplayName = "Iron Blade", Stackable = false, MaxStack = 1, IsWeapon = true },
 }
 
 local function getInventory(player: Player)
 	local profile = DataService.GetProfile(player)
 	if not profile then
-		return nil
+		return nil, nil
 	end
 	if typeof(profile.Inventory) ~= "table" then
 		profile.Inventory = {}
 	end
-	return profile.Inventory
+	return profile.Inventory, profile
+end
+
+local function validateAmount(amount: number): (boolean, number)
+	if typeof(amount) ~= "number" or amount ~= amount or amount == math.huge or amount == -math.huge
+		or amount ~= math.floor(amount) or amount < 1 or amount > MAX_STACK then
+		return false, 0
+	end
+	return true, amount
 end
 
 function InventoryService.GetDefinitions()
@@ -39,12 +50,15 @@ function InventoryService.AddItem(player: Player, itemId: string, amount: number
 	if not definition then
 		return false, "UnknownItem"
 	end
+	local validAmount, safeAmount = validateAmount(amount)
+	if not validAmount then
+		return false, "InvalidAmount"
+	end
 	local inventory = getInventory(player)
 	if not inventory then
 		return false, "ProfileUnavailable"
 	end
 
-	local safeAmount = math.clamp(math.floor(amount), 1, MAX_STACK)
 	local current = math.max(0, math.floor(tonumber(inventory[itemId]) or 0))
 	local cap = if definition.Stackable then definition.MaxStack else 1
 	if current + safeAmount > cap then
@@ -56,15 +70,22 @@ function InventoryService.AddItem(player: Player, itemId: string, amount: number
 end
 
 function InventoryService.RemoveItem(player: Player, itemId: string, amount: number): (boolean, string?)
-	if not ItemDefinitions[itemId] then
+	local definition = ItemDefinitions[itemId]
+	if not definition then
 		return false, "UnknownItem"
 	end
-	local inventory = getInventory(player)
-	if not inventory then
+	local validAmount, safeAmount = validateAmount(amount)
+	if not validAmount then
+		return false, "InvalidAmount"
+	end
+	local inventory, profile = getInventory(player)
+	if not inventory or not profile then
 		return false, "ProfileUnavailable"
 	end
+	if definition.IsWeapon and profile.EquippedWeapon == itemId then
+		return false, "WeaponEquipped"
+	end
 
-	local safeAmount = math.clamp(math.floor(amount), 1, MAX_STACK)
 	local current = math.max(0, math.floor(tonumber(inventory[itemId]) or 0))
 	if current < safeAmount then
 		return false, "InsufficientItems"
