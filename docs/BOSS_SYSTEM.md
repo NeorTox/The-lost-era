@@ -18,7 +18,7 @@ The first boss encounter is deliberately limited to **Sunset Bay**. It provides 
 | Encounter respawn delay | 180 seconds |
 | Trigger | Hold the ProximityPrompt at the Sunset Bay arena pedestal |
 
-Only one Tide Warden encounter can be active on Sunset Bay at a time. The summon pedestal is placed outside the generated safe-zone bounds. The server checks the player's actual position, current island and profile level before starting an encounter.
+Only one Tide Warden encounter can be active on Sunset Bay per Roblox server instance at a time. The summon pedestal is placed outside the generated safe-zone bounds. The server checks the player's actual position, current island and profile level before starting an encounter.
 
 ## Combat phases
 
@@ -78,7 +78,7 @@ The completion ID is stored in `BossCompletions` on the player profile. Existing
 - The fallback Tide Warden is a recolored R6 blockout rig, not final boss art.
 - The fight has no custom animation, audio, camera sequence, arena lockdown, cutscene or dedicated mobile boss bar yet.
 - Boss health is currently fixed rather than scaled by party size.
-- The encounter is globally shared per island; it is not instanced per party.
+- The encounter is shared by players on the same island within one server instance; separate Roblox servers can each host their own encounter. It is not instanced per party.
 - The other ten boss markers remain disabled and do not have authored boss definitions.
 - Boss completion is recorded for players who qualify for rewards; disconnected players do not receive an offline payout.
 - Phase 10 is partial until Studio runtime, multiplayer and mobile tests pass.
