@@ -7,7 +7,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 1 | Project Setup | Partial | Repository and Rojo mapping exist; import and project configuration still need Studio verification |
 | 2 | Core Player System | Partial | Character lifecycle, baseline health/movement, energy, stamina, sprint and mobile/keyboard input are implemented; a basic live HUD now displays health, energy, stamina, XP, level, island and coins; animation assets and Studio lifecycle tests remain |
 | 3 | Player Data and Saving | Implemented in source; runtime verification pending | Schema v3 profile, DataStore metadata session locks, serialized UpdateAsync saves, bounded retries, autosave and final shutdown/player-leave save are implemented; test multi-server contention, failure recovery and rejoin in a published private test place |
-| 4 | Level and Progression | Partial | Server-authoritative XP, multi-level grants, skill points and level cap 300 exist; Config.lua still contains the eight-island prototype map, so the 11-island IDs and unlock schedule must be migrated together after the new progression ranges are approved |
+| 4 | Level and Progression | Implemented in source; runtime balancing pending | Canonical 11-island unlock/enemy/boss schedule is centralized in Config.lua; level-to-island helpers, recommended-island attributes and spawn-level validation are integrated; XP curve, boss gates and reward pacing still need Studio playtesting |
 | 5 | Currency and Economy | Partial | Coins and skill points exist; Memory Crystals, Void Essence and full economic balancing remain |
 | 6 | World and Island Construction | Not implemented | Build the 11 canonical islands and required locations, NPCs, enemy sets, boss areas and exploration content |
 | 7 | Portal and Travel | Framework only | Portal service exists; physical portals, spawn points, all destinations and travel tests remain |
@@ -44,6 +44,8 @@ The current work focused on closing the most important early-game foundation gap
 - Character spawning and respawning apply baseline health and movement values.
 - Sprint stamina is controlled by the server and exposed through keyboard and mobile touch input.
 - Quest objective progress already lives in the profile and is included in save snapshots.
+- The canonical 11-island progression schedule is centralized in Config.lua; old island IDs fall back to the highest island unlocked by the saved player level.
+- Enemy spawn markers and enemy spawning now validate island IDs and level bands against the shared progression configuration.
 
 ## Verification boundary
 
