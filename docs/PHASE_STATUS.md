@@ -52,7 +52,7 @@ The current work focused on closing the most important early-game foundation gap
 - Enemy AI targets only players on its island, excludes safe-zone players, checks protection again before damage, and returns to its home position when targets leave its chase leash.
 - Enemy defeats award configured XP/Coins and have a chance to add Slime Gel, Driftwood Scrap or Tide Shell directly to the killer's inventory; respawn delay starts after the old model is removed.
 - Existing enemy and quest reward values plus shop prices are centralized in Config.Economy and validated at server startup; Memory Crystal and Void Essence are reserved for future systems.
-- WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems. Enemy markers remain disabled until matching rig templates are authored.
+- WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems. Sunset Bay's three starter enemy markers are enabled against the generated fallback templates; the other ten islands' markers remain disabled until their rosters are authored.
 - SafeZoneService tracks player proximity; enemies ignore protected players, and basic attacks/offensive skills are rejected from safe zones while healing remains available.
 
 ## Verification boundary
