@@ -46,7 +46,7 @@ default.project.json
 
 ## Phase tracking
 
-See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist and [docs/CURRENCY_ECONOMY.md](docs/CURRENCY_ECONOMY.md) for the persistent currency model and implemented economy sources/sinks.
+See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist, [docs/CURRENCY_ECONOMY.md](docs/CURRENCY_ECONOMY.md) for the persistent currency model and implemented economy sources/sinks, and [docs/WORLD_GREYBOX.md](docs/WORLD_GREYBOX.md) for the generated world and marker contracts.
 
 ## Setup
 
