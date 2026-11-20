@@ -18,6 +18,7 @@ export type EnemyDefinition = {
 	DropChance: number,
 	DropMin: number,
 	DropMax: number,
+	IsBoss: boolean?,
 }
 
 local definitions: {[string]: EnemyDefinition} = {
@@ -71,6 +72,24 @@ local definitions: {[string]: EnemyDefinition} = {
 		DropChance = 0.35,
 		DropMin = 1,
 		DropMax = 1,
+	},
+	TideWarden = {
+		TemplateName = "TideWarden",
+		DisplayName = "Tide Warden",
+		BodyColor = Color3.fromRGB(28, 91, 111),
+		AccentColor = Color3.fromRGB(99, 224, 218),
+		MaxHealth = 1400,
+		Damage = 12,
+		WalkSpeed = 12,
+		AggroRange = 82,
+		AttackRange = 7,
+		AttackCooldown = 2.8,
+		ChaseLeash = 180,
+		DropItemId = "TideWardenSigil",
+		DropChance = 0,
+		DropMin = 1,
+		DropMax = 1,
+		IsBoss = true,
 	},
 }
 
