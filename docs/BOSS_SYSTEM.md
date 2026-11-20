@@ -18,11 +18,11 @@ The first boss encounter is deliberately limited to **Sunset Bay**. It provides 
 | Encounter respawn delay | 180 seconds |
 | Trigger | Hold the ProximityPrompt at the Sunset Bay arena pedestal |
 
-Only one Tide Warden encounter can be active on Sunset Bay per Roblox server instance at a time. The summon pedestal is placed outside the generated safe-zone bounds. The server checks the player's actual position, current island and profile level before starting an encounter.
+Only one Tide Warden encounter can be active on Sunset Bay per Roblox server instance at a time. The summon pedestal is placed outside the generated safe-zone bounds. The server checks the player's actual position, living character, prompt distance, current island and profile level before starting an encounter.
 
 ## Combat phases
 
-The boss uses the ordinary server-authoritative enemy movement and melee loop, with its combat attributes changed by health thresholds. Boss targeting, movement pursuit and Tide Slam impact checks are constrained to the generated BossArenaPlatform bounds; a player who leaves the arena can disengage rather than being chased across the island.
+The boss uses the ordinary server-authoritative enemy movement and melee loop, with its combat attributes changed by health thresholds. Boss targeting, movement pursuit and Tide Slam impact checks are constrained to the generated BossArenaPlatform bounds; melee and damaging skills against the boss are also rejected when the attacker is outside the arena. A player who leaves the arena can disengage rather than being chased across the island.
 
 | Phase | Health threshold | Name | Melee damage | Melee cooldown | Walk speed |
 |---:|---:|---|---:|---:|---:|
@@ -106,3 +106,5 @@ The completion ID is stored in `BossCompletions` on the player profile. Existing
 18. Run a multiplayer test with one safe-zone player, one arena player and one player on another island.
 19. Verify the boss returns to its arena and does not pursue players who leave the platform bounds.
 20. Verify the responsive boss HUD appears only for players on the encounter island, updates health and phase, and hides after the boss is removed.
+21. Verify melee and damaging skills cannot damage the boss from outside the arena platform.
+22. Verify a prompt trigger from beyond the server-validated interaction distance or with a dead character cannot start the encounter.
