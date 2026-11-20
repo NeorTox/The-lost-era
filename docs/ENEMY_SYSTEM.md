@@ -29,6 +29,7 @@ Stats, names, colors and drops live in `src/server/LostEra/EnemyCatalog.lua`. En
 - Enemies have a home position and a chase leash; they return to their spawn when a valid target cannot be found.
 - Enemy damage, health, level, XP and coin values are assigned by the server.
 - A valid final hit grants the configured XP and coins. A successful loot roll adds the material directly to the killer's inventory.
+- Only Training Slime kills advance the "Welcome to Sunset Bay" quest, matching the objective text; Bandit and Crab kills do not count toward it.
 - The respawn timer begins after the previous enemy model has been removed, rather than counting down while the enemy is still alive.
 - Spawn levels must be whole numbers inside the island's configured normal-enemy band.
 
