@@ -9,7 +9,7 @@
 - Echo Battle Arena and Memory Training Island as separate special-area greyboxes.
 - A spawn pad and named destination spawn for every location.
 - Quest and shop location signs, a designated safe-zone marker, a boss arena platform and a hidden-treasure placeholder for each main island.
-- Three disabled enemy spawn markers and one disabled boss spawn marker for each main island.
+- Three enemy spawn markers and one disabled boss spawn marker for each main island. Sunset Bay's three enemy markers are enabled for the starter roster; enemy markers on the other ten islands remain disabled.
 - Static placeholder models for Mira and Toma on Sunset Bay, compatible with the current NPC proximity checks.
 
 This is intentionally a structural blockout. It is not final terrain, a finished biome, a built boss encounter or a treasure collection system.
@@ -37,15 +37,15 @@ Special areas are world locations, not main progression islands. They do not cha
 
 ## Enabling enemy markers
 
-Generated enemy markers start with `Enabled = false` so a new server does not repeatedly attempt to spawn a rig that has not been authored yet.
+Sunset Bay's three generated enemy markers are enabled for the starter roster. `EnemyTemplateService` creates fallback blockout rigs for `TrainingSlime`, `DriftwoodBandit` and `TideCrab` when matching art-authored models are not already present in `ServerStorage/EnemyTemplates`.
 
-For each marker:
-1. Create a Model with a Humanoid and HumanoidRootPart under `ServerStorage/EnemyTemplates`.
-2. Set the marker's `TemplateName` to the exact Model name.
-3. Check its `IslandId` and `Level` against the central Config island enemy band.
-4. Set `Enabled = true` only after the template is ready.
+For an art-authored replacement:
+1. Create a Model with a Humanoid and BasePart named `HumanoidRootPart` under `ServerStorage/EnemyTemplates`.
+2. Use the exact template name referenced by the marker.
+3. Check the marker's `IslandId` and whole-number `Level` against the central Config island enemy band.
+4. Keep a marker disabled until its matching template is valid.
 
-Sunset Bay uses `TrainingSlime` as the intended first template name. Other generated template names are explicit TODO placeholders. The boss markers are not consumed until BossService is implemented.
+The fallback rigs are simple R6 blockout models and are not final character art or animation assets. The other ten islands retain disabled enemy markers with explicit TODO template names. Their markers should only be enabled after the corresponding island roster is authored. Boss markers remain disabled until BossService is implemented.
 
 ## Rejoin and respawn placement
 
@@ -56,6 +56,8 @@ Sunset Bay uses `TrainingSlime` as the intended first template name. Other gener
 - After later character respawns, the current `CurrentIsland` attribute is used to place the character back at that location.
 
 The Central Area and special areas are valid world destinations, but not combat progression islands.
+
+Sunset Bay's starter enemy markers are positioned outside the generated safe zone and use levels 1, 12 and 24 for Training Slime, Driftwood Bandit and Tide Crab respectively. The starter roster and AI/drop behavior are documented in [ENEMY_SYSTEM.md](ENEMY_SYSTEM.md).
 
 ## Design boundary
 
