@@ -165,8 +165,7 @@ end
 
 local function hasLineOfSight(character: Model, enemy: Model, origin: Vector3, target: Vector3): boolean
 	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Exclude
-	params.FilterDescendantsInstances = { character, enemy }
+	params.ExcludeInstances = { character, enemy }
 	params.IgnoreWater = true
 	return Workspace:Raycast(origin, target - origin, params) == nil
 end
@@ -229,8 +228,7 @@ function SkillService.Use(player: Player, skillId: any): (boolean, string, any?)
 	local weapon = WeaponService.GetStats(player)
 	local baseDamage = math.floor((12 + level * 1.6) * weapon.DamageMultiplier * definition.DamageMultiplier)
 	local overlap = OverlapParams.new()
-	overlap.FilterType = Enum.RaycastFilterType.Exclude
-	overlap.FilterDescendantsInstances = { character }
+	overlap.ExcludeInstances = { character }
 
 	local parts = Workspace:GetPartBoundsInRadius(root.Position, definition.Radius, overlap)
 	local hitEnemies: {[Model]: boolean} = {}
@@ -245,6 +243,7 @@ function SkillService.Use(player: Player, skillId: any): (boolean, string, any?)
 			local enemyHumanoid = enemy:FindFirstChildOfClass("Humanoid")
 			local enemyRoot = enemy:FindFirstChild("HumanoidRootPart")
 			if enemyHumanoid and enemyHumanoid.Health > 0 and enemyRoot and enemyRoot:IsA("BasePart")
+				and (enemyRoot.Position - root.Position).Magnitude <= definition.Radius
 				and hasLineOfSight(character, enemy, root.Position, enemyRoot.Position) then
 				hitEnemies[enemy] = true
 				enemy:SetAttribute("LastHitUserId", player.UserId)
