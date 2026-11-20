@@ -70,3 +70,8 @@ Maximum level: **300**.
 4. Portals, island world generation, and NPC content.
 5. Boss mechanics, drops, weapons, and abilities.
 6. Client UI, effects, and end-to-end playtesting.
+
+
+## Client controls
+
+Rojo maps `src/client` to `StarterPlayer/StarterPlayerScripts/LostEraClient`. The starter skill hotbar is mobile/touch friendly and also supports keyboard keys 1, 2 and 3. All skill effects and combat decisions remain server-authoritative.
