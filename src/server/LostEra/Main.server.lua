@@ -15,6 +15,7 @@ local SkillService = require(script.Parent.SkillService)
 local WeaponService = require(script.Parent.WeaponService)
 local CharacterService = require(script.Parent.CharacterService)
 local WorldBuilderService = require(script.Parent.WorldBuilderService)
+local SafeZoneService = require(script.Parent.SafeZoneService)
 
 local progressionValid, progressionError = Config.ValidateIslandProgression()
 if not progressionValid then
@@ -28,6 +29,7 @@ end
 
 -- Build the service contract folders before the portal and spawn services scan Workspace.
 WorldBuilderService.Init()
+SafeZoneService.Init()
 RemoteService.Init()
 EnemySpawnService.Init()
 PortalService.Init()
@@ -51,6 +53,7 @@ local function loadPlayer(player: Player)
 	CharacterService.InitPlayer(player)
 	player:SetAttribute("CurrentIsland", profile.CurrentIsland)
 	WorldBuilderService.PlacePlayerAtLocation(player, profile.CurrentIsland)
+	SafeZoneService.SyncPlayer(player)
 	print(string.format("[TheLostEra] Profile ready: %s (Level %d)", player.Name, profile.Level))
 end
 
