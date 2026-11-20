@@ -16,7 +16,11 @@ local WeaponService = require(script.Parent.WeaponService)
 
 local function loadPlayer(player: Player)
 	local profile = DataService.LoadPlayer(player)
-	if not profile or player.Parent ~= Players then
+	if not profile then
+		return
+	end
+	if player.Parent ~= Players then
+		DataService.ReleasePlayer(player)
 		return
 	end
 
@@ -51,8 +55,9 @@ task.spawn(function()
 end)
 
 game:BindToClose(function()
-	DataService.SaveAll()
-	task.wait(3)
+	-- ReleaseAll performs a final serialized save, then unlocks each successfully saved profile.
+	-- Do not use a fixed sleep: let the operations finish or exhaust their bounded retries.
+	DataService.ReleaseAll()
 end)
 
 RemoteService.Init()
