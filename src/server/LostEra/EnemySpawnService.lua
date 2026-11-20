@@ -1,6 +1,6 @@
 --!strict
 -- Reads designer-authored spawn markers from Workspace/EnemySpawnPoints.
--- Each marker is a BasePart with TemplateName, Level, and IslandId attributes.
+-- Each marker is a BasePart with TemplateName, Level, IslandId and Enabled attributes.
 
 local Workspace = game:GetService("Workspace")
 local Config = require(script.Parent.Config)
@@ -41,9 +41,10 @@ local function runSpawnPoint(point: BasePart)
 			and level == level
 			and level > -math.huge
 			and level < math.huge
-		local safeLevel = if hasValidLevel then math.floor(level) else island.EnemyLevelMin
+			and level == math.floor(level)
+		local safeLevel = if hasValidLevel then level else island.EnemyLevelMin
 		if not hasValidLevel and level ~= nil then
-			warn("[TheLostEra] Spawn marker has a non-finite or invalid Level attribute:", point:GetFullName())
+			warn("[TheLostEra] Spawn marker has a non-finite or non-integer Level attribute:", point:GetFullName())
 			runningPoints[point] = nil
 			return
 		end
@@ -64,17 +65,35 @@ local function runSpawnPoint(point: BasePart)
 			and respawnSeconds > -math.huge
 			and respawnSeconds < math.huge
 			then math.clamp(respawnSeconds, 3, 3600)
-			else 12
+			else 18
 
 		local currentEnemy: Model? = nil
+		local hasSpawned = false
 		while point.Parent and point:GetAttribute("Enabled") ~= false do
-			if not currentEnemy or not currentEnemy.Parent then
-				currentEnemy = EnemyService.Spawn(templateName, point.CFrame, safeLevel, islandId)
-				if currentEnemy then
-					spawnedForPoint[point] = currentEnemy
+			if currentEnemy and not currentEnemy.Parent then
+				currentEnemy = nil
+				spawnedForPoint[point] = nil
+				if hasSpawned then
+					-- Respawn delay starts after the defeated/removed model is gone.
+					task.wait(delaySeconds)
+					if not point.Parent or point:GetAttribute("Enabled") == false then
+						break
+					end
 				end
 			end
-			task.wait(delaySeconds)
+
+			if not currentEnemy then
+				currentEnemy = EnemyService.Spawn(templateName, point.CFrame, safeLevel, islandId)
+				if currentEnemy then
+					hasSpawned = true
+					spawnedForPoint[point] = currentEnemy
+				else
+					-- Avoid warning/spawn churn if a template is missing or invalid.
+					task.wait(delaySeconds)
+				end
+			end
+
+			task.wait(0.5)
 		end
 
 		spawnedForPoint[point] = nil
