@@ -27,6 +27,10 @@ Toma at Sunset Bay sells Health Potions, Bronze Swords and Iron Blades. Weapon i
 
 Players have 100 energy and regenerate 8 energy per second while connected. Three ability slots are available. Power Strike is unlocked and equipped in slot 1 for new players.
 
+## Player interface
+
+Rojo maps `src/client/SkillController.client.lua` into `StarterPlayer/StarterPlayerScripts/LostEraClient`. It creates a touch-friendly three-slot hotbar and an **SKILLS** panel. Players tap a hotbar slot on touch devices or press keyboard keys 1, 2 and 3 on desktop. The management panel shows skill requirements and points, allows eligible abilities to be unlocked, and assigns unlocked abilities to slots. Slot assignments are filled in order; an occupied slot can be replaced by choosing that slot for another ability.
+
 ## Client remotes
 
 All events are created under `ReplicatedStorage/TheLostEraRemotes`:
@@ -51,4 +55,4 @@ The client submits skill/weapon IDs and a skill slot only. The server checks pro
 8. Buy and equip weapons; test level gates, insufficient funds and duplicate purchases.
 9. Rejoin and verify skill points, unlocked/equipped skills, weapon ownership and equipped weapon persist.
 
-The mobile/touch hotbar is included at `StarterPlayerScripts/LostEraClient/SkillController.client.lua`. It displays the equipped abilities and sends skill-use requests when tapped. Desktop players can also press 1, 2 or 3. The full skill unlock/equip management menu, weapon models, animations, visual effects and actual Roblox Studio runtime tests are not yet included.
+The touch hotbar and skill unlock/equip panel are included at `StarterPlayerScripts/LostEraClient/SkillController.client.lua`. Weapon models, ability animations, visual effects and actual Roblox Studio runtime tests are not yet included.
