@@ -12,7 +12,7 @@ The first playable enemy slice is intentionally limited to **Sunset Bay**. Three
 | Driftwood Bandit | 12 | 145 | 10 | 14 | 48 | 1.45 s | Driftwood Scrap, 40% chance, 1–2 |
 | Tide Crab | 24 | 210 | 16 | 11 | 40 | 1.9 s | Tide Shell, 35% chance, 1 |
 
-Stats, names, colors and drops live in `src/server/LostEra/EnemyCatalog.lua`. Enemy XP and coin rewards use the shared `Config.Economy.EnemyRewards` formula unless a server-side spawn explicitly overrides them.
+Stats, names, colors and drops live in `src/server/LostEra/EnemyCatalog.lua`. Enemy XP and coin rewards use the shared `Config.Economy.EnemyRewards` formula unless a server-side spawn explicitly overrides them. The three material IDs are allowlisted by DataService as well as InventoryService so they survive profile sanitization and saving.
 
 ## Template contract
 
