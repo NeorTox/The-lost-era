@@ -7,7 +7,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 1 | Project Setup | Partial | Repository and Rojo mapping exist; import and project configuration still need Studio verification |
 | 2 | Core Player System | Partial | Character lifecycle, baseline health/movement, energy, stamina, sprint and mobile/keyboard input are implemented; full HUD, animation assets and Studio lifecycle tests remain |
 | 3 | Player Data and Saving | Implemented in source; runtime verification pending | Schema v3 profile, DataStore metadata session locks, serialized UpdateAsync saves, bounded retries, autosave and final shutdown/player-leave save are implemented; test multi-server contention, failure recovery and rejoin in a published private test place |
-| 4 | Level and Progression | Partial | Server-authoritative XP, multi-level grants, skill points and level cap 300 exist; new 11-island unlock schedule still needs approval and implementation |
+| 4 | Level and Progression | Partial | Server-authoritative XP, multi-level grants, skill points and level cap 300 exist; Config.lua still contains the eight-island prototype map, so the 11-island IDs and unlock schedule must be migrated together after the new progression ranges are approved |
 | 5 | Currency and Economy | Partial | Coins and skill points exist; Memory Crystals, Void Essence and full economic balancing remain |
 | 6 | World and Island Construction | Not implemented | Build the 11 canonical islands and required locations, NPCs, enemy sets, boss areas and exploration content |
 | 7 | Portal and Travel | Framework only | Portal service exists; physical portals, spawn points, all destinations and travel tests remain |
