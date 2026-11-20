@@ -63,6 +63,11 @@ game:BindToClose(function()
 	DataService.ReleaseAll()
 end)
 
+local progressionValid, progressionError = Config.ValidateIslandProgression()
+if not progressionValid then
+	error("[TheLostEra] Invalid island progression configuration: " .. tostring(progressionError))
+end
+
 RemoteService.Init()
 EnemySpawnService.Init()
 PortalService.Init()
