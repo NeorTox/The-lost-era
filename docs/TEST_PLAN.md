@@ -31,7 +31,12 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Award enough XP to cross multiple levels in one grant.
 - [ ] Verify each gained level grants one skill point.
 - [ ] Verify the level cap is 300 and XP resets at cap.
-- [ ] Verify recommended-island changes against the approved 11-island unlock schedule once the replacement level map is finalized.
+- [ ] Verify recommended-island changes at every configured unlock boundary in `docs/PROGRESSION_DESIGN.md`.
+- [ ] Verify each island ID, enemy band and boss level matches the central Config table.
+- [ ] Verify levels 25, 52, 79, 106, 133, 160, 187, 214, 241, 268 and 300 map to the expected boss challenge.
+- [ ] Verify normal enemy markers outside their island's configured level band are rejected.
+- [ ] Verify boss spawns require the configured boss level and an explicit IsBoss option.
+- [ ] Verify old profile island IDs migrate according to saved level without changing saved level, XP or other profile fields.
 
 ## Player lifecycle and movement
 
