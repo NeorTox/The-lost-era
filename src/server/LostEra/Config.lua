@@ -181,7 +181,7 @@ function Config.ValidateEconomy(): (boolean, string?)
 		if typeof(itemId) ~= "string" or typeof(item) ~= "table"
 			or not isWholeNumber(item.Price, false)
 			or not isWholeNumber(item.Stock, false)
-			or not isWholeNumber(item.RequiredLevel, true)
+			or not isWholeNumber(item.RequiredLevel, false)
 			or item.RequiredLevel > Config.MaxLevel then
 			return false, "Invalid shop definition: " .. tostring(itemId)
 		end
