@@ -51,4 +51,4 @@ The client submits skill/weapon IDs and a skill slot only. The server checks pro
 8. Buy and equip weapons; test level gates, insufficient funds and duplicate purchases.
 9. Rejoin and verify skill points, unlocked/equipped skills, weapon ownership and equipped weapon persist.
 
-This is the server-side framework. The skill menu, hotbar, mobile buttons, weapon models, animations, visual effects and actual Roblox Studio runtime tests are not yet included.
+The mobile/touch hotbar is included at `StarterPlayerScripts/LostEraClient/SkillController.client.lua`. It displays the equipped abilities and sends skill-use requests when tapped. Desktop players can also press 1, 2 or 3. The full skill unlock/equip management menu, weapon models, animations, visual effects and actual Roblox Studio runtime tests are not yet included.
