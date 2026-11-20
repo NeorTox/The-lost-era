@@ -13,16 +13,46 @@ local saving: {[number]: boolean} = {}
 
 local function defaultProfile()
 	return {
-		SchemaVersion = 1,
+		SchemaVersion = 2,
 		Level = Config.StartingLevel,
 		XP = Config.StartingXP,
 		Coins = Config.StartingCoins,
 		CurrentIsland = "SunsetBay",
 		Inventory = {},
 		CompletedQuests = {},
+		QuestProgress = {},
 		CreatedAt = os.time(),
 		LastSaveAt = 0,
 	}
+end
+
+local function sanitizeStringArray(value: any): {string}
+	local result = {}
+	if typeof(value) ~= "table" then
+		return result
+	end
+	for _, entry in ipairs(value) do
+		if typeof(entry) == "string" and #entry <= 100 then
+			table.insert(result, entry)
+		end
+	end
+	return result
+end
+
+local function sanitizeQuestProgress(value: any): {[string]: number}
+	local result: {[string]: number} = {}
+	if typeof(value) ~= "table" then
+		return result
+	end
+	for questId, progress in pairs(value) do
+		if typeof(questId) == "string" and #questId <= 100 then
+			local safeProgress = tonumber(progress)
+			if safeProgress then
+				result[questId] = math.clamp(math.floor(safeProgress), 0, 1000000)
+			end
+		end
+	end
+	return result
 end
 
 local function sanitizeProfile(raw: any)
@@ -36,9 +66,11 @@ local function sanitizeProfile(raw: any)
 	profile.Coins = math.max(0, math.floor(tonumber(raw.Coins) or 0))
 	profile.CurrentIsland = if typeof(raw.CurrentIsland) == "string" and Config.GetIslandById(raw.CurrentIsland) then raw.CurrentIsland else "SunsetBay"
 	profile.Inventory = if typeof(raw.Inventory) == "table" then raw.Inventory else {}
-	profile.CompletedQuests = if typeof(raw.CompletedQuests) == "table" then raw.CompletedQuests else {}
+	profile.CompletedQuests = sanitizeStringArray(raw.CompletedQuests)
+	profile.QuestProgress = sanitizeQuestProgress(raw.QuestProgress)
 	profile.CreatedAt = tonumber(raw.CreatedAt) or os.time()
 	profile.LastSaveAt = tonumber(raw.LastSaveAt) or 0
+	profile.SchemaVersion = 2
 
 	if profile.Level >= Config.MaxLevel then
 		profile.Level = Config.MaxLevel
@@ -49,6 +81,14 @@ end
 
 local function keyFor(userId: number): string
 	return Config.DataStoreKeyPrefix .. tostring(userId)
+end
+
+local function cloneProfile(profile: {[string]: any})
+	local snapshot = table.clone(profile)
+	snapshot.Inventory = table.clone(profile.Inventory)
+	snapshot.CompletedQuests = table.clone(profile.CompletedQuests)
+	snapshot.QuestProgress = table.clone(profile.QuestProgress)
+	return snapshot
 end
 
 function DataService.LoadPlayer(player: Player)
@@ -73,18 +113,18 @@ end
 
 function DataService.SavePlayer(player: Player): boolean
 	local userId = player.UserId
+	while saving[userId] do
+		task.wait(0.05)
+	end
+
 	local profile = profiles[userId]
-	if not profile or saving[userId] then
+	if not profile then
 		return false
 	end
 
 	saving[userId] = true
 	profile.LastSaveAt = os.time()
-	-- This profile currently contains only scalar fields and owned tables.
-	-- Clone nested tables so writes cannot observe mutations during the request.
-	local snapshot = table.clone(profile)
-	snapshot.Inventory = table.clone(profile.Inventory)
-	snapshot.CompletedQuests = table.clone(profile.CompletedQuests)
+	local snapshot = cloneProfile(profile)
 
 	local ok, err = pcall(function()
 		Store:UpdateAsync(keyFor(userId), function(_oldValue)
@@ -101,14 +141,26 @@ function DataService.SavePlayer(player: Player): boolean
 end
 
 function DataService.ReleasePlayer(player: Player)
+	local userId = player.UserId
 	DataService.SavePlayer(player)
-	profiles[player.UserId] = nil
-	saving[player.UserId] = nil
+	while saving[userId] do
+		task.wait(0.05)
+	end
+	profiles[userId] = nil
 end
 
 function DataService.SaveAll()
+	local pending = 0
 	for _, player in ipairs(Players:GetPlayers()) do
-		task.spawn(DataService.SavePlayer, player)
+		pending += 1
+		task.spawn(function()
+			DataService.SavePlayer(player)
+			pending -= 1
+		end)
+	end
+
+	while pending > 0 do
+		task.wait(0.05)
 	end
 end
 
