@@ -110,6 +110,21 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Tap each mobile hotbar slot; on desktop, verify keys 1, 2 and 3 activate equipped skills.
 - [ ] Repeated remote calls cannot bypass cooldowns, level requirements, energy or ownership checks.
 
+## Generated world and island construction
+
+- [ ] Start a fresh server and confirm Workspace/TheLostEraGeneratedWorld contains the Central Area, all 11 canonical islands, Echo Battle Arena and Memory Training Island.
+- [ ] Confirm Workspace/IslandSpawns contains a Spawn part for CentralArea, each main island and each special area.
+- [ ] Confirm the player initially spawns on Sunset Bay after profile load and returns to their saved location after rejoining.
+- [ ] Confirm a respawn returns the player to their current island or special area, not always to the hub.
+- [ ] Confirm the hub has a portal for every main island and both special areas.
+- [ ] Confirm every main island and special area has a return portal to CentralArea.
+- [ ] Confirm level-locked hub portals reject travel and unlocked portals update the player location.
+- [ ] Confirm each main island has three disabled enemy spawn markers with levels inside its configured enemy band; enabling a marker starts its spawn loop only after a matching template exists.
+- [ ] Confirm each main island has a boss spawn marker at its configured boss level; BossService is not implemented yet.
+- [ ] Confirm the Sunset Bay Mira and Toma placeholder NPC models are found by NPCService and pass proximity checks.
+- [ ] Confirm quest, shop, safe-zone, boss-arena and treasure placeholders are positioned within their island boundaries.
+- [ ] Confirm special area IDs persist through profile saves and loads.
+
 ## Portals and world
 
 - [ ] Locked island portals refuse travel.
@@ -118,4 +133,4 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 
 ## Known implementation boundary
 
-NPC models, portal parts, enemy rigs, spawn points, the complete inventory/quest/shop UI, animation assets and in-Studio multiplayer tests still need to be created/performed. The existing skill menu/hotbar, player HUD and sprint touch action are only the currently implemented portion of the interface. This plan is a test checklist, not a claim that those tests have passed.
+The generated world is a greybox, not final terrain/art. Enemy templates, BossService, safe-zone enforcement, treasure collection interactions, full island NPC/quest/shop rosters, the complete inventory/quest/shop UI, animation assets and in-Studio multiplayer tests still need to be created/performed. The existing skill menu/hotbar, player HUD and sprint touch action are only the currently implemented portion of the interface. This plan is a test checklist, not a claim that those tests have passed.
