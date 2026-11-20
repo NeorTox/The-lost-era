@@ -412,11 +412,29 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 	runSpecialAttacks(encounter)
 end
 
+function BossService.CanPlayerDamage(player: Player, enemy: Model): boolean
+	local encounter = encountersByModel[enemy]
+	if not encounter or encounter.Settled or player.Parent ~= Players then
+		return false
+	end
+	if player:GetAttribute("CurrentIsland") ~= encounter.IslandId
+		or SafeZoneService.IsPlayerInSafeZone(player) then
+		return false
+	end
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not humanoid or humanoid.Health <= 0 or not root or not root:IsA("BasePart") then
+		return false
+	end
+	return isInsideArena(root.Position, encounter.Arena)
+end
+
 function BossService.RecordDamage(player: Player, enemy: Model, amount: number)
 	local encounter = encountersByModel[enemy]
 	if not encounter or encounter.Settled or player.Parent ~= Players then return end
 	if not isFiniteNumber(amount) or amount <= 0 then return end
-	if player:GetAttribute("CurrentIsland") ~= encounter.IslandId then return end
+	if not BossService.CanPlayerDamage(player, enemy) then return end
 	encounter.Contributions[player.UserId] = (encounter.Contributions[player.UserId] or 0) + amount
 end
 
