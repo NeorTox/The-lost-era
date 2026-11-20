@@ -22,6 +22,7 @@ local LOCK_RETRY_INTERVAL = 2
 local DATASTORE_RETRIES = 4
 local RETRY_BASE_DELAY = 1
 local RETRY_MAX_DELAY = 8
+local MAX_CURRENCY_BALANCE = Config.MaxCurrencyBalance
 
 local VALID_ITEMS = {
 	HealthPotion = 99,
@@ -44,10 +45,13 @@ local VALID_WEAPONS = {
 
 local function defaultProfile()
 	return {
-		SchemaVersion = 3,
+		SchemaVersion = 4,
 		Level = Config.StartingLevel,
 		XP = Config.StartingXP,
 		Coins = Config.StartingCoins,
+		SkillPoints = 0,
+		MemoryCrystals = 0,
+		VoidEssence = 0,
 		CurrentIsland = "SunsetBay",
 		Inventory = { TrainingBlade = 1 },
 		CompletedQuests = {},
@@ -59,6 +63,14 @@ local function defaultProfile()
 		CreatedAt = os.time(),
 		LastSaveAt = 0,
 	}
+end
+
+local function sanitizeCurrency(value: any): number
+	local amount = tonumber(value)
+	if not amount or amount ~= amount or amount == math.huge or amount == -math.huge then
+		return 0
+	end
+	return math.clamp(math.floor(amount), 0, MAX_CURRENCY_BALANCE)
 end
 
 local function sanitizeStringArray(value: any, allowed: {[string]: boolean}?): {string}
@@ -120,8 +132,9 @@ local function sanitizeProfile(raw: any)
 	profile.Level = math.clamp(math.floor(tonumber(raw.Level) or 1), 1, Config.MaxLevel)
 	local rawXP = tonumber(raw.XP) or 0
 	profile.XP = if rawXP == rawXP and rawXP < math.huge then math.max(0, math.floor(rawXP)) else 0
-	local rawCoins = tonumber(raw.Coins) or 0
-	profile.Coins = if rawCoins == rawCoins and rawCoins < math.huge then math.max(0, math.floor(rawCoins)) else 0
+	profile.Coins = sanitizeCurrency(raw.Coins)
+	profile.MemoryCrystals = sanitizeCurrency(raw.MemoryCrystals)
+	profile.VoidEssence = sanitizeCurrency(raw.VoidEssence)
 	-- Preserve valid saved islands. Retired prototype IDs or islands above the
 	-- player's current unlock level resolve to the highest island they can access.
 	local savedIsland = if typeof(raw.CurrentIsland) == "string" then Config.GetIslandById(raw.CurrentIsland) else nil
@@ -171,7 +184,7 @@ local function sanitizeProfile(raw: any)
 
 	profile.CreatedAt = tonumber(raw.CreatedAt) or os.time()
 	profile.LastSaveAt = tonumber(raw.LastSaveAt) or 0
-	profile.SchemaVersion = 3
+	profile.SchemaVersion = 4
 
 	if profile.Level >= Config.MaxLevel then
 		profile.Level = Config.MaxLevel
@@ -294,7 +307,7 @@ function DataService.LoadPlayer(player: Player)
 				end
 				if typeof(oldValue) == "table" then
 					local storedSchemaVersion = tonumber(oldValue.SchemaVersion) or 1
-					if storedSchemaVersion > 3 then
+					if storedSchemaVersion > 4 then
 						loadRefusalReason = "Stored profile was written by a newer game schema"
 						return nil
 					end
