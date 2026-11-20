@@ -21,7 +21,7 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Award enough XP to cross multiple levels in one grant.
 - [ ] Verify each gained level grants one skill point.
 - [ ] Verify the level cap is 300 and XP resets at cap.
-- [ ] Verify recommended island changes at levels 1, 40, 80, 120, 160, 210, 260, and 280.
+- [ ] Verify recommended-island changes against the approved 11-island unlock schedule once the replacement level map is finalized.
 
 ## Inventory, weapons and shops
 - [ ] Add and remove known items; verify counts.
