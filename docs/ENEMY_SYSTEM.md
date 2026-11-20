@@ -39,3 +39,15 @@ Stats, names, colors and drops live in `src/server/LostEra/EnemyCatalog.lua`. En
 - The blockout rigs have no final meshes, custom animations, sound, attack telegraphs or polished effects.
 - Loot is awarded directly into inventory; there is not yet a physical loot pickup/drop model.
 - Roblox Studio runtime, multiplayer, mobile and balance testing remain required. Source implementation alone is not proof of runtime correctness.
+
+## Roblox Studio verification checklist (not yet run)
+
+1. Start a private test server and confirm one Training Slime, one Driftwood Bandit and one Tide Crab spawn on Sunset Bay.
+2. Confirm no enemy spawns in the Central Area or inside the Sunset Bay safe zone.
+3. Enter each enemy's aggro range and verify it follows only players on Sunset Bay.
+4. Move outside an enemy's chase leash and verify it returns to its own spawn marker.
+5. Stand inside the safe-zone bounds and verify enemy attacks do not reduce player health, including when entering the zone during a chase.
+6. Defeat each enemy and verify XP, Coins, the Sunset Bay quest objective and inventory material drops.
+7. Confirm defeated enemies are removed, then respawn after the configured 18-second delay begins.
+8. Disable a spawn marker during a live encounter and verify its enemy is removed without the marker restarting unexpectedly.
+9. Test with multiple players, including one inside the safe zone and another fighting outside it.
