@@ -89,6 +89,12 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Currency balances are capped at the configured safe integer maximum and persist across rejoin.
 - [ ] HUD displays Coins, Skill Points, Memory Crystals and Void Essence and updates immediately when server attributes change.
 - [ ] No client remote can directly award or set currency balances.
+- [ ] Verify normal enemy XP/Coins follow Config.Economy formulas for low-, mid- and high-level bands.
+- [ ] Verify enemy XP/Coins are awarded only once per enemy death and only to the server-recorded last attacker.
+- [ ] Verify Welcome to Sunset Bay grants 75 XP and 25 Coins once; replaying the claim does not award again.
+- [ ] Verify Health Potion, Bronze Sword and Iron Blade prices/level gates match Config.Economy.Shop.
+- [ ] Force inventory stack-limit failure during purchase and verify the exact Coin price is refunded.
+- [ ] Verify Config.ValidateEconomy rejects fractional, negative, infinite or malformed reward and shop values.
 
 ## Skills and abilities
 
