@@ -118,6 +118,7 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Confirm island spawn markers are placed just above the top surface of their platform, not floating above or embedded in the platform.
 - [ ] Confirm a respawn returns the player to their current island or special area, not always to the hub.
 - [ ] Confirm the hub has a portal for every main island and both special areas.
+- [ ] Confirm the hub spawn pad is unobstructed by the hub landmark and the player can walk directly from spawn to all portal triggers.
 - [ ] Confirm every main island and special area has a return portal to CentralArea.
 - [ ] Confirm level-locked hub portals reject travel and unlocked portals update the player location.
 - [ ] Confirm each main island has three disabled enemy spawn markers with levels inside its configured enemy band; enabling a marker starts its spawn loop only after a matching template exists.
