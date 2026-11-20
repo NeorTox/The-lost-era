@@ -1,5 +1,5 @@
 --!strict
--- THE LOST ERA — central server configuration.
+-- THE LOST ERA — central server configuration and canonical level progression.
 
 local Config = {}
 
@@ -21,21 +21,37 @@ Config.BaseJumpPower = 50
 Config.StaminaDrainPerSecond = 20
 Config.StaminaRegenPerSecond = 15
 
+-- XP required to advance from the current level to the next level.
+-- Formula: base + linear growth + power growth.
+Config.XPBase = 100
+Config.XPLinearPerLevel = 35
+Config.XPPowerScale = 8
+Config.XPPowerExponent = 1.35
+
+-- Canonical 11-island route.
+-- Each island has a normal-enemy level band and a boss challenge level.
+-- The next island opens three levels after the previous island's boss level.
 Config.Islands = {
-	{ Id = "SunsetBay", Name = "Sunset Bay", UnlockLevel = 1, EnemyLevelMin = 1, EnemyLevelMax = 35, BossLevel = 40 },
-	{ Id = "PixelCity", Name = "Pixel City", UnlockLevel = 40, EnemyLevelMin = 40, EnemyLevelMax = 75, BossLevel = 80 },
-	{ Id = "ClockworkKingdom", Name = "Clockwork Kingdom", UnlockLevel = 80, EnemyLevelMin = 80, EnemyLevelMax = 115, BossLevel = 120 },
-	{ Id = "EmeraldJungle", Name = "Emerald Jungle", UnlockLevel = 120, EnemyLevelMin = 120, EnemyLevelMax = 155, BossLevel = 160 },
-	{ Id = "DragonVolcano", Name = "Dragon Volcano", UnlockLevel = 160, EnemyLevelMin = 160, EnemyLevelMax = 205, BossLevel = 210 },
-	{ Id = "SkyRealm", Name = "Sky Realm", UnlockLevel = 210, EnemyLevelMin = 210, EnemyLevelMax = 255, BossLevel = 260 },
-	{ Id = "ForgottenKingdom", Name = "Forgotten Kingdom", UnlockLevel = 260, EnemyLevelMin = 260, EnemyLevelMax = 275, BossLevel = 280 },
-	{ Id = "EternalAbyss", Name = "Eternal Abyss", UnlockLevel = 280, EnemyLevelMin = 280, EnemyLevelMax = 295, BossLevel = 300 },
+	{ Id = "SunsetBay", Name = "Sunset Bay", UnlockLevel = 1, EnemyLevelMin = 1, EnemyLevelMax = 24, BossLevel = 25 },
+	{ Id = "PixelCity", Name = "Pixel City", UnlockLevel = 28, EnemyLevelMin = 28, EnemyLevelMax = 51, BossLevel = 52 },
+	{ Id = "ForgottenAcademy", Name = "Forgotten Academy", UnlockLevel = 55, EnemyLevelMin = 55, EnemyLevelMax = 78, BossLevel = 79 },
+	{ Id = "ClockworkKingdom", Name = "Clockwork Kingdom", UnlockLevel = 82, EnemyLevelMin = 82, EnemyLevelMax = 105, BossLevel = 106 },
+	{ Id = "TheLostEra", Name = "The Lost Era", UnlockLevel = 109, EnemyLevelMin = 109, EnemyLevelMax = 132, BossLevel = 133 },
+	{ Id = "EmeraldJungle", Name = "Emerald Jungle", UnlockLevel = 136, EnemyLevelMin = 136, EnemyLevelMax = 159, BossLevel = 160 },
+	{ Id = "FrozenKingdom", Name = "Frozen Kingdom", UnlockLevel = 163, EnemyLevelMin = 163, EnemyLevelMax = 186, BossLevel = 187 },
+	{ Id = "DragonVolcano", Name = "Dragon Volcano", UnlockLevel = 190, EnemyLevelMin = 190, EnemyLevelMax = 213, BossLevel = 214 },
+	{ Id = "SkyRealm", Name = "Sky Realm", UnlockLevel = 217, EnemyLevelMin = 217, EnemyLevelMax = 240, BossLevel = 241 },
+	{ Id = "AtlantisIsland", Name = "Atlantis Island", UnlockLevel = 244, EnemyLevelMin = 244, EnemyLevelMax = 267, BossLevel = 268 },
+	{ Id = "HauntedIsland", Name = "Haunted Island", UnlockLevel = 271, EnemyLevelMin = 271, EnemyLevelMax = 299, BossLevel = 300 },
 }
 
 function Config.GetXPToNextLevel(level: number): number
 	local safeLevel = math.clamp(math.floor(level), 1, Config.MaxLevel)
 	local offset = safeLevel - 1
-	return math.floor(100 + offset * 35 + offset ^ 1.35 * 8)
+	local required = Config.XPBase
+		+ offset * Config.XPLinearPerLevel
+		+ offset ^ Config.XPPowerExponent * Config.XPPowerScale
+	return math.max(1, math.floor(required))
 end
 
 function Config.GetIslandById(islandId: string)
@@ -47,16 +63,71 @@ function Config.GetIslandById(islandId: string)
 	return nil
 end
 
+function Config.GetIslandIndex(islandId: string): number?
+	for index, island in ipairs(Config.Islands) do
+		if island.Id == islandId then
+			return index
+		end
+	end
+	return nil
+end
+
+function Config.GetNextIsland(islandId: string)
+	local index = Config.GetIslandIndex(islandId)
+	if not index then
+		return nil
+	end
+	return Config.Islands[index + 1]
+end
+
 function Config.GetIslandForLevel(level: number)
+	local safeLevel = math.clamp(math.floor(level), 1, Config.MaxLevel)
 	local selected = Config.Islands[1]
 	for _, island in ipairs(Config.Islands) do
-		if level >= island.UnlockLevel then
+		if safeLevel >= island.UnlockLevel then
 			selected = island
 		else
 			break
 		end
 	end
 	return selected
+end
+
+function Config.ValidateIslandProgression(): (boolean, string?)
+	if #Config.Islands ~= 11 then
+		return false, "Expected exactly 11 canonical islands"
+	end
+	if Config.Islands[1].UnlockLevel ~= 1 then
+		return false, "The first island must unlock at level 1"
+	end
+
+	local previousBossLevel = 0
+	local seenIds: {[string]: boolean} = {}
+	for index, island in ipairs(Config.Islands) do
+		if seenIds[island.Id] then
+			return false, "Duplicate island ID: " .. island.Id
+		end
+		seenIds[island.Id] = true
+
+		if island.UnlockLevel < 1 or island.UnlockLevel > Config.MaxLevel then
+			return false, "Invalid unlock level for " .. island.Id
+		end
+		if island.EnemyLevelMin < island.UnlockLevel or island.EnemyLevelMax < island.EnemyLevelMin then
+			return false, "Invalid enemy level band for " .. island.Id
+		end
+		if island.BossLevel <= island.EnemyLevelMax or island.BossLevel > Config.MaxLevel then
+			return false, "Invalid boss level for " .. island.Id
+		end
+		if index > 1 and island.UnlockLevel <= previousBossLevel then
+			return false, "Next island must unlock after previous boss level: " .. island.Id
+		end
+		previousBossLevel = island.BossLevel
+	end
+
+	if Config.Islands[#Config.Islands].BossLevel ~= Config.MaxLevel then
+		return false, "Final island boss must be level 300"
+	end
+	return true, nil
 end
 
 return Config
