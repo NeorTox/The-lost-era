@@ -1,85 +1,101 @@
-# THE LOST ERA — Test Plan
+# THE LOST ERA — Echoes of 2000
 
-These checks are intended for Roblox Studio. Static repository inspection does not prove runtime correctness.
+A Roblox anime adventure RPG built with **Luau** for Roblox Studio, targeting mobile and PC.
 
-## Studio setup
-- [ ] Open the project with Rojo and confirm `ServerScriptService/LostEra` contains the server modules.
-- [ ] Publish a private test experience.
-- [ ] Enable Studio API access only for that test experience when testing DataStores.
-- [ ] Start a local server with at least two test clients.
+## Project status
 
-## Player data
-- [ ] A first-time player receives Level 1, 0 XP, 0 Coins, a Training Blade and Power Strike.
-- [ ] Rejoining restores level, XP, coins, island, inventory, completed quest IDs, quest progress, skill points, unlocked/equipped skills and equipped weapon.
-- [ ] Temporarily disable API access and confirm a load failure does not overwrite existing cloud data.
-- [ ] Leave and rejoin during autosave; check Output for DataStore errors.
-- [ ] Test server shutdown with multiple players connected.
-- [ ] Confirm old schema profiles migrate to schema version 3 and receive a valid starter weapon/skill loadout.
+This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
 
-## Progression
-- [ ] Award XP and verify level-up at the configured threshold.
-- [ ] Award enough XP to cross multiple levels in one grant.
-- [ ] Verify each gained level grants one skill point.
-- [ ] Verify the level cap is 300 and XP resets at cap.
-- [ ] Verify recommended-island changes against the approved 11-island unlock schedule once the replacement level map is finalized.
+Roblox Studio runtime tests are still required before systems can be considered release-ready.
 
-## Inventory, weapons and shops
-- [ ] Add and remove known items; verify counts.
-- [ ] Reject zero, negative, fractional, NaN, infinite and over-limit inventory amounts.
-- [ ] Reject unknown items and additions beyond stack limits.
-- [ ] Reject removal when the player does not own enough items.
-- [ ] Confirm an equipped weapon cannot be removed.
-- [ ] Buy Bronze Sword at level 10 and Iron Blade at level 30; verify prices and level checks.
-- [ ] Equip only owned weapons and verify attributes update.
-- [ ] Confirm weapon damage multiplier and range affect basic attacks.
+## Development environment
 
-## Quests and NPCs
-- [ ] Quest progress cannot exceed its target and persists across rejoin.
-- [ ] Incomplete quests cannot be claimed.
-- [ ] Completed quests cannot be claimed twice.
-- [ ] NPC interactions require the correct island and a distance of at most 14 studs.
-- [ ] Verify quest XP and coin rewards update player attributes.
+- Roblox Studio
+- Luau (Roblox's Lua-derived language)
+- [Rojo](https://rojo.space/) for syncing this source tree into Studio (optional but recommended)
 
-## Skills and abilities
-- [ ] Unlock Whirlwind at level 12, Healing Pulse at level 20 and Arcane Burst at level 35, respecting skill-point costs.
-- [ ] A new profile has Power Strike unlocked and equipped, with 100 energy.
-- [ ] Each level gained grants one skill point; unlock costs and level requirements are enforced.
-- [ ] Only unlocked skills can be equipped; only equipped skills can be used.
-- [ ] No more than three skills can be equipped.
-- [ ] Skill cooldown and energy costs are enforced by the server.
-- [ ] Power Strike, Whirlwind and Arcane Burst damage only nearby enemies on the current island.
-- [ ] Healing Pulse restores health but cannot exceed MaxHealth.
-- [ ] Skill unlocks, loadout and points survive rejoining.
-- [ ] Use the mobile SKILLS panel to unlock an eligible skill and assign it to an open/replacement slot.
-- [ ] Tap each mobile hotbar slot; on desktop, verify keyboard keys 1, 2 and 3 activate the corresponding equipped skills.
-- [ ] Repeated remote calls cannot bypass cooldowns, level requirements, energy or ownership checks.
+## Project layout
 
-## Portals and world
-- [ ] Locked island portals refuse travel.
-- [ ] Eligible players are moved to the configured spawn and CurrentIsland is updated.
-- [ ] Missing portal destinations safely refuse travel.
+```text
+src/
+├── server/
+│   └── LostEra/
+│       ├── Config.lua
+│       ├── CharacterService.lua
+│       ├── DataService.lua
+│       ├── ProgressionService.lua
+│       ├── InventoryService.lua
+│       ├── QuestService.lua
+│       ├── EnemyService.lua
+│       ├── EnemySpawnService.lua
+│       ├── CombatService.lua
+│       ├── PortalService.lua
+│       ├── WeaponService.lua
+│       ├── SkillService.lua
+│       ├── NPCService.lua
+│       ├── RemoteService.lua
+│       └── Main.server.lua
+└── client/
+    ├── SkillController.client.lua
+    ├── PlayerHUD.client.lua
+    └── SprintController.client.lua
 
-## Known implementation boundary
-NPC models, portal parts, enemy rigs, spawn points, the full player HUD, inventory/quest/shop interaction panels, animation assets and in-Studio multiplayer tests still need to be created/performed. A skill hotbar/menu and a sprint touch action now exist, but they do not constitute the complete UI phase. This plan is a test checklist, not a claim that those tests have passed.
+default.project.json
+```
 
+## Phase tracking
 
-## Core player lifecycle and movement
-- [ ] A loaded player receives MaxHealth 100, MaxEnergy 100, MaxStamina 100, WalkSpeed 16 and JumpPower 50.
-- [ ] Existing character receives the baseline values after profile load; newly spawned and respawned characters receive the same values.
-- [ ] Character death stops sprinting; respawn restores full health and stamina.
-- [ ] Sprint starts only for a loaded player with a living character and positive stamina.
-- [ ] Sprint speed is 24; stamina drains at the configured rate only while the character is moving.
-- [ ] Stamina regenerates while not sprinting and cannot exceed MaxStamina.
-- [ ] Sprint automatically stops at zero stamina and can be released with Left Shift or the mobile touch button.
-- [ ] Repeated player initialization does not create duplicate stamina loops or CharacterAdded connections.
+See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist.
 
-## Session-locked persistence
-- [ ] Loading a profile atomically acquires its session lock in DataStore metadata.
-- [ ] A second server cannot load a profile while another unexpired session lock is active.
-- [ ] Autosaves refresh the lock timestamp and only save when the current server still owns the lock.
-- [ ] A server that loses its lock cannot overwrite data saved by the new owner.
-- [ ] Final player-leave save releases the lock only after a successful save.
-- [ ] Failed final saves leave the lock in place until its expiry rather than exposing stale data.
-- [ ] BindToClose waits for bounded final save/unlock operations rather than relying on a fixed delay.
-- [ ] Transient DataStore errors retry with bounded exponential backoff; permanent load failure never creates and saves a fresh default profile over existing data.
-- [ ] Existing SchemaVersion 3 records load without changing their profile fields or requiring a migration.
+## Setup
+
+1. Install Roblox Studio.
+2. Install Rojo if you want to sync from this repository.
+3. From the project root, run `rojo serve`.
+4. Connect Roblox Studio using the Rojo plugin.
+5. In Studio, enable **Game Settings → Security → Enable Studio Access to API Services** only for a test experience when testing DataStores.
+6. Publish the experience before expecting production DataStore persistence.
+
+## Canonical world roster
+
+The current world specification contains 11 main islands, in this order:
+
+1. Sunset Bay
+2. Pixel City
+3. Forgotten Academy
+4. Clockwork Kingdom
+5. The Lost Era
+6. Emerald Jungle
+7. Frozen Kingdom
+8. Dragon Volcano
+9. Sky Realm
+10. Atlantis Island
+11. Haunted Island
+
+Additional areas: Echo Battle Arena and Memory Training Island.
+
+The 11-island roster supersedes the earlier eight-island prototype map. New unlock levels and enemy/boss ranges are intentionally not assigned in the code until the replacement progression schedule is finalized.
+
+Maximum level: **300**.
+
+## Important notes
+
+- Never put DataStore or other privileged server logic in a LocalScript.
+- Client requests must be validated by the server before rewards or progression are granted.
+- DataStore behavior must be tested in a published private test experience; static repository inspection is not a substitute for live Roblox testing.
+- Do not commit secrets, private keys, or personal account data.
+
+## Current player interface
+
+- `PlayerHUD.client.lua` displays level, island, coins, health, energy, stamina and XP.
+- `SkillController.client.lua` provides a mobile/touch skill hotbar and skill-management panel, plus desktop keys 1, 2 and 3.
+- `SprintController.client.lua` binds sprint to Left Shift on desktop and a ContextActionService touch button on mobile.
+- Health, energy, stamina and progression values are driven by the character and server-synced player attributes.
+
+## Player movement and stamina
+
+The server configures baseline health, walk speed and jump power on spawned characters. Sprint requests are validated by the server; stamina drains while the character is moving and regenerates when sprinting is inactive. Respawning restores the character's baseline values.
+
+## Roadmap
+
+The full 29-phase master checklist is tracked in [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md). Immediate priorities are private Roblox Studio validation of player lifecycle and persistence, then completion of the 11-island progression map and world foundation.
