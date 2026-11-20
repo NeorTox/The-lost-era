@@ -136,9 +136,11 @@ local function sanitizeProfile(raw: any)
 	profile.VoidEssence = sanitizeCurrency(raw.VoidEssence)
 	-- Preserve valid saved islands. Retired prototype IDs or islands above the
 	-- player's current unlock level resolve to the highest island they can access.
-	local savedIsland = if typeof(raw.CurrentIsland) == "string" then Config.GetIslandById(raw.CurrentIsland) else nil
-	if savedIsland and profile.Level >= savedIsland.UnlockLevel then
-		profile.CurrentIsland = savedIsland.Id
+	local savedLocation = if typeof(raw.CurrentIsland) == "string"
+		then Config.GetWorldLocationById(raw.CurrentIsland)
+		else nil
+	if savedLocation and profile.Level >= savedLocation.UnlockLevel then
+		profile.CurrentIsland = savedLocation.Id
 	else
 		profile.CurrentIsland = Config.GetIslandForLevel(profile.Level).Id
 	end
