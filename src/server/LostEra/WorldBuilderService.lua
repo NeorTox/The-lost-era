@@ -11,7 +11,6 @@ local Config = require(script.Parent.Config)
 local WorldBuilderService = {}
 
 local WORLD_FOLDER_NAME = "TheLostEraGeneratedWorld"
-local HUB_HEIGHT = 24
 local ISLAND_RING_RADIUS = 1050
 local ISLAND_PLATFORM_SIZE = 260
 
@@ -274,7 +273,6 @@ local function buildArea(
 	areaModel:SetAttribute("UnlockLevel", unlockLevel)
 	areaModel.Parent = world
 
-	local baseY = islandCenter.Y
 	createPart(
 		areaModel,
 		"Foundation",
@@ -291,7 +289,7 @@ local function buildArea(
 		theme:Lerp(Color3.fromRGB(46, 53, 63), 0.35),
 		Enum.Material.SmoothPlastic
 	)
-	local surfaceY = baseY + 26
+	local surfaceY = 26
 
 	local spawnPosition = islandCenter + Vector3.new(0, surfaceY + 2, 0)
 	local spawn = ensureSpawnFolder(spawnFolders, locationId, spawnPosition)
