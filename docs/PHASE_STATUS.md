@@ -57,4 +57,4 @@ The current work focused on closing the most important early-game foundation gap
 
 ## Verification boundary
 
-The repository files were fetched again after the commits. No CI status checks were reported for the latest commit, and no Roblox Studio runtime has been executed in this environment. Therefore, the source changes are committed and repository-verified, but Phase 2 and Phase 3 must remain runtime-unverified until the listed Studio tests pass.
+The repository files were fetched again after the commits. No CI status checks were reported for the latest commit, and no Roblox Studio runtime has been executed in this environment. Therefore, the source changes are committed and repository-verified, but Phases 2, 3 and 9 must remain runtime-unverified until the listed Studio tests pass. The Phase 9 Studio checklist is documented in ENEMY_SYSTEM.md.
