@@ -78,6 +78,7 @@ statusCorner.Parent = status
 
 local buttons: {TextButton} = {}
 local slotSkills: {[number]: string} = {}
+local slotEnergyCosts: {[number]: number} = {}
 local energy = 100
 local statusVersion = 0
 
@@ -139,7 +140,7 @@ local function renderState(state: any)
 		end
 	end
 
-	local definitions = {}
+	local definitions: {[string]: any} = {}
 	for _, definition in ipairs(state.Skills or {}) do
 		if typeof(definition) == "table" then
 			definitions[definition.Id] = definition
@@ -151,6 +152,7 @@ local function renderState(state: any)
 		local definition = if skillId then definitions[skillId] else nil
 		local button = buttons[slot]
 		if definition then
+			slotEnergyCosts[slot] = definition.EnergyCost
 			button.Text = string.format("%d  %s\n%d ENERGY", slot, string.upper(definition.Name), definition.EnergyCost)
 			button.BackgroundColor3 = if energy >= definition.EnergyCost
 				then Color3.fromRGB(42, 91, 105)
@@ -174,7 +176,7 @@ useResult.OnClientEvent:Connect(function(ok: boolean, resultCode: string, payloa
 			showStatus("Ability used")
 		end
 	else
-		local messages = {
+		local messages: {[string]: string} = {
 			Cooldown = "That ability is still cooling down",
 			InsufficientEnergy = "Not enough energy",
 			NoTargets = "No enemies in range",
@@ -191,7 +193,7 @@ player:GetAttributeChangedSignal("Energy"):Connect(function()
 	energy = tonumber(player:GetAttribute("Energy")) or energy
 	for slot = 1, 3 do
 		if slotSkills[slot] then
-			buttons[slot].BackgroundColor3 = if energy > 0
+			buttons[slot].BackgroundColor3 = if energy >= (slotEnergyCosts[slot] or math.huge)
 				then Color3.fromRGB(42, 91, 105)
 				else Color3.fromRGB(67, 65, 75)
 		end
