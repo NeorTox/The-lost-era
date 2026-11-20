@@ -14,6 +14,7 @@ local PortalService = require(script.Parent.PortalService)
 local SkillService = require(script.Parent.SkillService)
 local WeaponService = require(script.Parent.WeaponService)
 local CharacterService = require(script.Parent.CharacterService)
+local WorldBuilderService = require(script.Parent.WorldBuilderService)
 
 local function loadPlayer(player: Player)
 	local profile = DataService.LoadPlayer(player)
@@ -31,6 +32,7 @@ local function loadPlayer(player: Player)
 	WeaponService.SyncPlayer(player)
 	CharacterService.InitPlayer(player)
 	player:SetAttribute("CurrentIsland", profile.CurrentIsland)
+	WorldBuilderService.PlacePlayerAtLocation(player, profile.CurrentIsland)
 	print(string.format("[TheLostEra] Profile ready: %s (Level %d)", player.Name, profile.Level))
 end
 
@@ -73,6 +75,8 @@ if not economyValid then
 	error("[TheLostEra] Invalid economy configuration: " .. tostring(economyError))
 end
 
+-- Build the service contract folders before the portal and spawn services scan Workspace.
+WorldBuilderService.Init()
 RemoteService.Init()
 EnemySpawnService.Init()
 PortalService.Init()
