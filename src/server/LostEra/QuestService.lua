@@ -1,5 +1,5 @@
 --!strict
--- Quest progress and rewards are validated on the server.
+-- Quest progress and rewards are validated and persisted on the server.
 
 local DataService = require(script.Parent.DataService)
 local ProgressionService = require(script.Parent.ProgressionService)
@@ -17,15 +17,16 @@ local Quests = {
 	},
 }
 
-local progressByUser: {[number]: {[string]: number}} = {}
-
 function QuestService.GetDefinitions()
 	return Quests
 end
 
 function QuestService.GetProgress(player: Player, questId: string): number
-	local userProgress = progressByUser[player.UserId]
-	return if userProgress then userProgress[questId] or 0 else 0
+	local profile = DataService.GetProfile(player)
+	if not profile then
+		return 0
+	end
+	return profile.QuestProgress[questId] or 0
 end
 
 function QuestService.AddProgress(player: Player, questId: string, amount: number): boolean
@@ -33,6 +34,7 @@ function QuestService.AddProgress(player: Player, questId: string, amount: numbe
 	if not quest or amount <= 0 then
 		return false
 	end
+
 	local profile = DataService.GetProfile(player)
 	if not profile then
 		return false
@@ -41,12 +43,12 @@ function QuestService.AddProgress(player: Player, questId: string, amount: numbe
 		return false
 	end
 
-	local userProgress = progressByUser[player.UserId]
-	if not userProgress then
-		userProgress = {}
-		progressByUser[player.UserId] = userProgress
-	end
-	userProgress[questId] = math.clamp((userProgress[questId] or 0) + math.floor(amount), 0, quest.Target)
+	local safeAmount = math.max(1, math.floor(amount))
+	profile.QuestProgress[questId] = math.clamp(
+		(profile.QuestProgress[questId] or 0) + safeAmount,
+		0,
+		quest.Target
+	)
 	return true
 end
 
@@ -63,15 +65,14 @@ function QuestService.ClaimReward(player: Player, questId: string): (boolean, st
 		return false, "ObjectivesIncomplete"
 	end
 
-	-- Mark completed before granting rewards so repeated calls cannot double-claim.
 	table.insert(profile.CompletedQuests, questId)
 	ProgressionService.AddXP(player, quest.XPReward)
 	ProgressionService.AddCoins(player, quest.CoinReward)
 	return true, nil
 end
 
-function QuestService.ReleasePlayer(player: Player)
-	progressByUser[player.UserId] = nil
+function QuestService.ReleasePlayer(_player: Player)
+	-- Progress lives in the persistent profile, so no session-only state remains.
 end
 
 return QuestService
