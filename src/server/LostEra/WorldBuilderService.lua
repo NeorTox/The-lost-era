@@ -316,8 +316,8 @@ local function buildArea(
 	safeMarker.Transparency = 1
 	safeMarker.CanTouch = false
 
-	local questPosition = islandCenter + Vector3.new(-62, surfaceY + 1, -28)
-	local shopPosition = islandCenter + Vector3.new(62, surfaceY + 1, -28)
+	local questPosition = islandCenter + Vector3.new(-62, surfaceY, -28)
+	local shopPosition = islandCenter + Vector3.new(62, surfaceY, -28)
 	createSign(areaModel, "QuestLocation", questPosition, if isMainIsland then "QUESTS" else displayName, theme)
 	createSign(areaModel, "ShopLocation", shopPosition, if isMainIsland then "SUPPLIES" else "SPECIAL AREA", theme)
 
@@ -427,8 +427,8 @@ local function buildArea(
 
 	if isMainIsland and locationId == "SunsetBay" then
 		local npcFolder = ensureFolder(Workspace, "NPCs")
-		local guidePosition = islandCenter + Vector3.new(-48, surfaceY + 1, -44)
-		local merchantPosition = islandCenter + Vector3.new(48, surfaceY + 1, -44)
+		local guidePosition = islandCenter + Vector3.new(-48, surfaceY, -44)
+		local merchantPosition = islandCenter + Vector3.new(48, surfaceY, -44)
 		ensureMarker(
 			ensureFolder(Workspace, "NPCSpawnPoints"),
 			"Generated_SunsetGuide",
@@ -504,8 +504,11 @@ local function buildCentralArea(world: Folder, spawnFolders: Folder, portalFolde
 		CFrame.new(center + Vector3.new(0, 28.5, 0)),
 		Color3.fromRGB(116, 190, 216),
 		Enum.Material.Neon,
-		0.12
+		0.12,
+		false
 	)
+	hubSpawnPad.CanTouch = false
+	hubSpawnPad.CanQuery = false
 	createBillboard(hubSpawnPad, "THE LOST ERA • PORTAL HUB", Color3.fromRGB(255, 255, 255))
 
 	-- Keep the landmark clear of the actual spawn position.
