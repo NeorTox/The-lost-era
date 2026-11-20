@@ -292,11 +292,9 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 	if marker:GetAttribute("Enabled") ~= true then return end
 	if busyByIsland[islandId] then return end
 	if player:GetAttribute("CurrentIsland") ~= islandId then return end
-	if player:GetAttribute("InSafeZone") == true then
-		-- The prompt sits at the arena entrance; the player must step beyond
-		-- the active safe-zone bounds before beginning the encounter.
-		if SafeZoneService.IsPlayerInSafeZone(player) then return end
-	end
+	-- Use the actual marker bounds rather than trusting a potentially stale
+	-- replicated/cached InSafeZone attribute.
+	if SafeZoneService.IsPlayerInSafeZone(player) then return end
 
 	local profile = DataService.GetProfile(player)
 	local island = Config.GetIslandById(islandId)
