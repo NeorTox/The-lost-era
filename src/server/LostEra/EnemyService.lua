@@ -6,6 +6,7 @@ local Players = game:GetService("Players")
 local ServerStorage = game:GetService("ServerStorage")
 local Workspace = game:GetService("Workspace")
 
+local Config = require(script.Parent.Config)
 local ProgressionService = require(script.Parent.ProgressionService)
 local QuestService = require(script.Parent.QuestService)
 
@@ -94,8 +95,28 @@ function EnemyService.Spawn(templateName: string, spawnCFrame: CFrame, level: nu
 		return nil
 	end
 
-	local safeLevel = math.clamp(math.floor(level), 1, 300)
+	local island = Config.GetIslandById(islandId)
+	if not island then
+		warn("[TheLostEra] Cannot spawn enemy for unknown island:", islandId)
+		enemy:Destroy()
+		return nil
+	end
+
+	local safeLevel = math.clamp(math.floor(level), 1, Config.MaxLevel)
 	local settings = options or {}
+	local isBoss = settings.IsBoss == true
+	if isBoss then
+		if safeLevel ~= island.BossLevel then
+			warn("[TheLostEra] Boss level does not match configured island boss level:", islandId, safeLevel)
+			enemy:Destroy()
+			return nil
+		end
+	elseif safeLevel < island.EnemyLevelMin or safeLevel > island.EnemyLevelMax then
+		warn("[TheLostEra] Enemy level is outside configured island band:", islandId, safeLevel)
+		enemy:Destroy()
+		return nil
+	end
+
 	local maxHealth = math.max(50, math.floor(settings.MaxHealth or (100 + safeLevel * 24)))
 	local damage = math.max(1, math.floor(settings.Damage or (5 + safeLevel * 1.4)))
 
