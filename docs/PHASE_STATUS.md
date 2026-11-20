@@ -13,7 +13,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 7 | Portal and Travel | Partial | Hub portals to all 11 islands and both special areas plus return portals are generated; saved-location placement and level checks are wired; portal UI feedback and Studio travel tests remain |
 | 8 | Combat | Partial | Server-validated basic melee and skill attacks exist; combos, weapon feel, effects and full combat balancing remain |
 | 9 | Enemy System | Partial | Three Sunset Bay enemy types, fallback R6 blockout templates with health bars and ground collision, active spawn markers, leash-aware same-island AI, safe-zone and line-of-sight checks, inventory material drops and post-defeat respawns are implemented in source; other island rosters, authored rigs, polished effects, balance and Studio runtime tests remain |
-| 10 | Boss System | Partial | Sunset Bay Tide Warden encounter, server challenge prompt, three health-based phases, telegraphed Tide Slam, contribution-based first-clear/repeat rewards and saved boss completion are implemented in source; final boss art, arena lockdown, party scaling, remaining island bosses and Studio runtime tests remain |
+| 10 | Boss System | Partial | Sunset Bay Tide Warden encounter, server challenge prompt, three health-based phases, telegraphed Tide Slam, arena-bounded targeting, contribution-based first-clear/repeat rewards, saved boss completion and responsive boss health/phase HUD are implemented in source; final boss art, arena entry/exit lockdown, party scaling, remaining island bosses and Studio runtime tests remain |
 | 11 | Weapon System | Partial | Training Blade, Bronze Sword and Iron Blade plus server equip/stats exist; full weapon roster, skills, animations and drops remain |
 | 12 | Armor and Equipment | Not implemented | Armor slots, stats, sets, equipment UI and persistence remain |
 | 13 | Skill System | Partial | Four server-authoritative skills, unlock costs, loadout and energy regeneration exist; full skill roster, VFX and balancing remain |
@@ -26,7 +26,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 20 | PvP | Not implemented | Arena rules, matchmaking/duels, combat restrictions and rewards remain |
 | 21 | Memory Training | Not implemented | Training activities, progression, rewards and Memory Training Island remain |
 | 22 | Special Collectibles and Exploration | Not implemented | Hidden treasures, collectibles, secrets and exploration rewards remain |
-| 23 | UI | Partial | Skill menu/hotbar, sprint touch action and basic responsive player status HUD exist; inventory, quests, shops, NPC dialogue, settings and full visual polish remain |
+| 23 | UI | Partial | Skill menu/hotbar, sprint touch action, basic responsive player status HUD and responsive boss health/phase HUD exist; inventory, quests, shops, NPC dialogue, settings and full visual polish remain |
 | 24 | Audio, Animations and Effects | Not implemented | Asset selection, animation sets, soundscape, combat effects and optimization remain |
 | 25 | Multiplayer | Partial | Server services and remotes are structured for multiplayer; concurrent-player, persistence contention and gameplay tests remain |
 | 26 | Mobile Optimization | Partial | Touch skill controls and sprint action exist; device layout/performance, input testing and low-end device optimization remain |
@@ -57,7 +57,8 @@ The current work focused on closing the most important early-game foundation gap
 - WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems. Sunset Bay's three starter enemy markers are enabled against the generated fallback templates; the other ten islands' markers remain disabled until their rosters are authored.
 - SafeZoneService tracks player proximity; enemies ignore protected players, and basic attacks/offensive skills are rejected from safe zones while healing remains available.
 - Sunset Bay's Tide Warden challenge is implemented in BossService: a ProximityPrompt at the arena pedestal starts a single shared encounter for players level 24+, with phase thresholds at 60% and 25% boss health.
-- Tide Warden has three dynamically tuned melee phases, a telegraphed area attack, a phase nameplate, server damage contribution tracking and first-clear/repeat participant rewards. Other island boss markers remain disabled.
+- Tide Warden has three dynamically tuned melee phases, a telegraphed area attack, a phase nameplate, server damage contribution tracking and first-clear/repeat participant rewards. Boss pursuit and area attacks are constrained to the generated arena bounds; players can leave the arena. Other island boss markers remain disabled.
+- BossHUD.client.lua displays the active boss's name, phase and live health on PC and mobile; it is source-verified but still requires Studio UI and device testing.
 - Boss damage contribution is reported by validated melee and damaging skill paths; ordinary EnemyService kill rewards are suppressed for bosses so BossService controls boss payouts.
 
 ## Verification boundary
