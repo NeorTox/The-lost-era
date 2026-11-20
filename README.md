@@ -4,7 +4,7 @@ A Roblox RPG built with **Luau** for Roblox Studio.
 
 ## Project status
 
-This repository is the source of truth for the game. Development is being built in tested milestones. The initial foundation includes island configuration, player profile persistence, progression, and server startup.
+This repository is the source of truth for the game. Development is being built in tested milestones. The current source includes island configuration, player profile persistence, progression, inventory, starter quests, server-validated melee combat, basic enemy AI, and configurable enemy spawn markers.
 
 ## Development environment
 
@@ -21,6 +21,12 @@ src/
         ├── Config.lua
         ├── DataService.lua
         ├── ProgressionService.lua
+        ├── InventoryService.lua
+        ├── QuestService.lua
+        ├── EnemyService.lua
+        ├── EnemySpawnService.lua
+        ├── CombatService.lua
+        ├── RemoteService.lua
         └── Main.server.lua
 default.project.json
 ```
@@ -59,8 +65,8 @@ Maximum level: **300**.
 ## Roadmap
 
 1. Core server foundation and player persistence.
-2. XP, levels, island unlocks, and stat replication.
-3. Combat validation and enemy lifecycle.
-4. Quests, rewards, and inventory.
-5. Portals, world generation, and NPC content.
+2. Complete combat, enemy AI, and spawn-point integration.
+3. Harden persistence and persist quest objective progress.
+4. Portals, island world generation, and NPC content.
+5. Boss mechanics, drops, weapons, and abilities.
 6. Client UI, effects, and end-to-end playtesting.
