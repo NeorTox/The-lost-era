@@ -23,6 +23,7 @@ src/
 │       ├── Config.lua
 │       ├── CharacterService.lua
 │       ├── WorldBuilderService.lua
+│       ├── SafeZoneService.lua
 │       ├── DataService.lua
 │       ├── ProgressionService.lua
 │       ├── InventoryService.lua
@@ -59,7 +60,7 @@ See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation stat
 
 ## Canonical world roster
 
-The server now generates a navigable greybox containing the Central Area, the 11 main islands below, Echo Battle Arena and Memory Training Island. These are structural blockouts; final terrain, art, combat-safe logic and collectible interactions remain future work.
+The server now generates a navigable greybox containing the Central Area, the 11 main islands below, Echo Battle Arena and Memory Training Island. These are structural blockouts; final terrain, art, full PvP protections and collectible interactions remain future work.
 
 The 11 main islands are:
 
