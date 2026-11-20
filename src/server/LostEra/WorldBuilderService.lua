@@ -497,16 +497,28 @@ local function buildCentralArea(world: Folder, spawnFolders: Folder, portalFolde
 	spawnLocation.Material = Enum.Material.Neon
 	spawnLocation.Parent = hub
 
-	local centerPillar = createPart(
+	local hubSpawnPad = createPart(
 		hub,
-		"HubCore",
-		Vector3.new(16, 32, 16),
-		CFrame.new(center + Vector3.new(0, 44, 0)),
+		"HubSpawnPad",
+		Vector3.new(28, 1, 28),
+		CFrame.new(center + Vector3.new(0, 28.5, 0)),
 		Color3.fromRGB(116, 190, 216),
 		Enum.Material.Neon,
 		0.12
 	)
-	createBillboard(centerPillar, "THE LOST ERA • PORTAL HUB", Color3.fromRGB(255, 255, 255))
+	createBillboard(hubSpawnPad, "THE LOST ERA • PORTAL HUB", Color3.fromRGB(255, 255, 255))
+
+	-- Keep the landmark clear of the actual spawn position.
+	local centerPillar = createPart(
+		hub,
+		"HubCore",
+		Vector3.new(16, 32, 16),
+		CFrame.new(center + Vector3.new(0, 44, -62)),
+		Color3.fromRGB(116, 190, 216),
+		Enum.Material.Neon,
+		0.12
+	)
+	createBillboard(centerPillar, "PORTAL HUB", Color3.fromRGB(255, 255, 255))
 
 	local destinations = {}
 	for _, island in ipairs(Config.Islands) do table.insert(destinations, island) end
