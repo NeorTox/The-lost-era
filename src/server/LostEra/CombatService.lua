@@ -3,12 +3,12 @@
 
 local Workspace = game:GetService("Workspace")
 local EnemyService = require(script.Parent.EnemyService)
+local WeaponService = require(script.Parent.WeaponService)
 
 local CombatService = {}
 local lastAttackAt: {[number]: number} = {}
 
 local ATTACK_COOLDOWN = 0.65
-local ATTACK_RANGE = 12
 local BASE_DAMAGE = 12
 local DAMAGE_PER_LEVEL = 1.6
 
@@ -53,7 +53,8 @@ function CombatService.TryAttack(player: Player, targetInstance: any): (boolean,
 	if player:GetAttribute("CurrentIsland") ~= targetInstance:GetAttribute("IslandId") then
 		return false, "WrongIsland"
 	end
-	if (enemyRoot.Position - playerRoot.Position).Magnitude > ATTACK_RANGE then
+	local weapon = WeaponService.GetStats(player)
+	if (enemyRoot.Position - playerRoot.Position).Magnitude > weapon.AttackRange then
 		return false, "OutOfRange"
 	end
 	if not hasLineOfSight(character, playerRoot.Position, targetInstance, enemyRoot.Position) then
@@ -62,7 +63,7 @@ function CombatService.TryAttack(player: Player, targetInstance: any): (boolean,
 
 	lastAttackAt[player.UserId] = now
 	local level = math.max(1, math.floor(player:GetAttribute("Level") or 1))
-	local damage = math.floor(BASE_DAMAGE + level * DAMAGE_PER_LEVEL)
+	local damage = math.floor((BASE_DAMAGE + level * DAMAGE_PER_LEVEL) * weapon.DamageMultiplier)
 	targetInstance:SetAttribute("LastHitUserId", player.UserId)
 	enemyHumanoid:TakeDamage(damage)
 	return true, nil
