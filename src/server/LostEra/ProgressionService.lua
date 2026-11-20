@@ -72,6 +72,7 @@ local function isValidNonNegativeAmount(amount: any): boolean
 		and amount ~= math.huge
 		and amount ~= -math.huge
 		and amount >= 0
+		and amount == math.floor(amount)
 end
 
 local function addBalance(player: Player, field: string, attribute: string, amount: any, maximum: number): boolean
@@ -79,7 +80,7 @@ local function addBalance(player: Player, field: string, attribute: string, amou
 	if not profile or not isValidNonNegativeAmount(amount) then
 		return false
 	end
-	local safeAmount = math.floor(amount)
+	local safeAmount = amount
 	if safeAmount == 0 then
 		return true
 	end
