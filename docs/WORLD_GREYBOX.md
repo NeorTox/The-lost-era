@@ -61,7 +61,7 @@ The Central Area and special areas are valid world destinations, but not combat 
 
 The builder replaces only `Workspace/TheLostEraGeneratedWorld` each time it runs. Named service folders are reused, and generated service markers use the `Generated_` prefix. If custom Studio content is added under those same generated names, rename it before re-running the builder or the generated marker may be repositioned.
 
-Safe-zone markers are active: players within their location marker are protected from the implemented enemy AI, basic melee attacks and offensive skills. Healing Pulse remains usable. This is not a full PvP protection system. Treasure placeholders remain non-collectible until the exploration system is built.
+Safe-zone markers are active: the main-island safe area covers the spawn, quest and shop service points; players within it are protected from the implemented enemy AI, basic melee attacks and offensive skills. Enemy and boss spawn markers sit outside this area. Healing Pulse remains usable. This is not a full PvP protection system. Treasure placeholders remain non-collectible until the exploration system is built.
 
 
 Safe-zone enforcement uses the marker bounds and currently governs the implemented PvE enemy AI, basic melee attacks and offensive skills. It does not imply future PvP protections.
