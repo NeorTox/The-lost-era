@@ -11,6 +11,16 @@ Config.StartingLevel = 1
 Config.StartingXP = 0
 Config.StartingCoins = 0
 
+-- Baseline character values; keep these centralized for balancing.
+Config.BaseMaxHealth = 100
+Config.BaseMaxEnergy = 100
+Config.BaseMaxStamina = 100
+Config.BaseWalkSpeed = 16
+Config.SprintWalkSpeed = 24
+Config.BaseJumpPower = 50
+Config.StaminaDrainPerSecond = 20
+Config.StaminaRegenPerSecond = 15
+
 Config.Islands = {
 	{ Id = "SunsetBay", Name = "Sunset Bay", UnlockLevel = 1, EnemyLevelMin = 1, EnemyLevelMax = 35, BossLevel = 40 },
 	{ Id = "PixelCity", Name = "Pixel City", UnlockLevel = 40, EnemyLevelMin = 40, EnemyLevelMax = 75, BossLevel = 80 },
