@@ -5,6 +5,7 @@ local Workspace = game:GetService("Workspace")
 
 local Config = require(script.Parent.Config)
 local DataService = require(script.Parent.DataService)
+local ProgressionService = require(script.Parent.ProgressionService)
 local WeaponService = require(script.Parent.WeaponService)
 local EnemyService = require(script.Parent.EnemyService)
 
@@ -129,9 +130,11 @@ function SkillService.Unlock(player: Player, skillId: any): (boolean, string?)
 		return false, "InsufficientSkillPoints"
 	end
 
-	profile.SkillPoints -= cost
+	local spent, spendError = ProgressionService.SpendSkillPoints(player, cost)
+	if not spent then
+		return false, spendError or "InsufficientSkillPoints"
+	end
 	table.insert(profile.UnlockedSkills, skillId)
-	player:SetAttribute("SkillPoints", profile.SkillPoints)
 	return true, nil
 end
 
