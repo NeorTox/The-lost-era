@@ -4,7 +4,7 @@ A Roblox anime adventure RPG built with **Luau** for Roblox Studio, targeting mo
 
 ## Project status
 
-This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
+This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
 
 Roblox Studio runtime tests are still required before systems can be considered release-ready.
 
@@ -45,7 +45,7 @@ default.project.json
 
 ## Phase tracking
 
-See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist and [docs/CURRENCY_ECONOMY.md](docs/CURRENCY_ECONOMY.md) for the persistent currency model.
+See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist and [docs/CURRENCY_ECONOMY.md](docs/CURRENCY_ECONOMY.md) for the persistent currency model and implemented economy sources/sinks.
 
 ## Setup
 
