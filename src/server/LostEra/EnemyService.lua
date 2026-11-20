@@ -78,7 +78,7 @@ local function startAI(enemy: Model)
 	end)
 end
 
-function EnemyService.Spawn(templateName: string, spawnCFrame: CFrame, level: number, islandId: string, options)
+function EnemyService.Spawn(templateName: string, spawnCFrame: CFrame, level: number, islandId: string, options: {[string]: any}?)
 	local templates = ServerStorage:FindFirstChild("EnemyTemplates")
 	local template = templates and templates:FindFirstChild(templateName)
 	if not template or not template:IsA("Model") then
@@ -121,7 +121,9 @@ function EnemyService.Spawn(templateName: string, spawnCFrame: CFrame, level: nu
 		if killer then
 			ProgressionService.AddXP(killer, enemy:GetAttribute("XPReward") or 0)
 			ProgressionService.AddCoins(killer, enemy:GetAttribute("CoinReward") or 0)
-			QuestService.AddProgress(killer, "WelcomeToSunsetBay", 1)
+			if enemy:GetAttribute("IslandId") == "SunsetBay" then
+				QuestService.AddProgress(killer, "WelcomeToSunsetBay", 1)
+			end
 		end
 		activeEnemies[enemy] = nil
 		task.delay(3, function()
