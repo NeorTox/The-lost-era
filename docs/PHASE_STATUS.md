@@ -9,7 +9,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 3 | Player Data and Saving | Implemented in source; runtime verification pending | Schema v4 profile with backward migration from v3, DataStore metadata session locks, serialized UpdateAsync saves, bounded retries, autosave and final shutdown/player-leave save are implemented; test multi-server contention, failure recovery and rejoin in a published private test place |
 | 4 | Level and Progression | Implemented in source; runtime balancing pending | Canonical 11-island unlock/enemy/boss schedule is centralized in Config.lua; level-to-island helpers, recommended-island attributes and spawn-level validation are integrated; XP curve, boss gates and reward pacing still need Studio playtesting |
 | 5 | Currency and Economy | Partial | Coins, Skill Points, Memory Crystals and Void Essence now have persistent schema-v4 balances and server-only add/spend APIs; existing enemy/quest rewards and shop/skill sinks are centralized in Config.Economy; Memory Crystal and Void Essence gameplay sources/sinks, new reward tables and economic playtesting remain |
-| 6 | World and Island Construction | Not implemented | Build the 11 canonical islands and required locations, NPCs, enemy sets, boss areas and exploration content |
+| 6 | World and Island Construction | Greybox generated in source; art/content incomplete | Runtime world builder creates the Central Area, 11 themed greybox islands, Echo Battle Arena and Memory Training Island; spawn/portal/quest/shop/safe-zone/boss/treasure markers exist; safe-zone rules, collectible interactions, complete NPC/enemy rosters, terrain art and Studio validation remain |
 | 7 | Portal and Travel | Framework only | Portal service exists; physical portals, spawn points, all destinations and travel tests remain |
 | 8 | Combat | Partial | Server-validated basic melee and skill attacks exist; combos, weapon feel, effects and full combat balancing remain |
 | 9 | Enemy System | Partial | Basic enemy service, AI and spawn markers exist; complete enemy roster, behavior, drops and world integration remain |
@@ -48,6 +48,7 @@ The current work focused on closing the most important early-game foundation gap
 - The canonical 11-island progression schedule is centralized in Config.lua; old island IDs fall back to the highest island unlocked by the saved player level.
 - Enemy spawn markers and enemy spawning now validate island IDs and level bands against the shared progression configuration.
 - Existing enemy and quest reward values plus shop prices are centralized in Config.Economy and validated at server startup; Memory Crystal and Void Essence are reserved for future systems.
+- WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems.
 
 ## Verification boundary
 
