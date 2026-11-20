@@ -23,7 +23,11 @@ local DEFINITIONS = {
 		IslandId = "SunsetBay",
 		DisplayName = "Toma, the Supply Merchant",
 		Dialogue = "Need supplies? I have essentials for the road.",
-		Shop = { HealthPotion = { Price = 30, Stock = 99 } },
+		Shop = {
+			HealthPotion = { Price = 30, Stock = 99, RequiredLevel = 1 },
+			BronzeSword = { Price = 250, Stock = 1, RequiredLevel = 10 },
+			IronBlade = { Price = 900, Stock = 1, RequiredLevel = 30 },
+		},
 	},
 }
 
@@ -64,7 +68,11 @@ function NPCService.Interact(player: Player, npcId: any)
 	if not def then return false, "UnknownNPC", nil end
 	if not DataService.GetProfile(player) then return false, "ProfileUnavailable", nil end
 	if not validateNear(player, npcId) then return false, "TooFarOrWrongIsland", nil end
-	local response = { NpcId = npcId, DisplayName = def.DisplayName, Dialogue = def.Dialogue }
+	local response: {[string]: any} = {
+		NpcId = npcId,
+		DisplayName = def.DisplayName,
+		Dialogue = def.Dialogue,
+	}
 	if def.QuestId then
 		response.QuestId = def.QuestId
 		response.QuestProgress = QuestService.GetProgress(player, def.QuestId)
@@ -73,7 +81,12 @@ function NPCService.Interact(player: Player, npcId: any)
 	if def.Shop then
 		response.Shop = {}
 		for itemId, item in pairs(def.Shop) do
-			table.insert(response.Shop, { ItemId = itemId, Price = item.Price, Stock = item.Stock })
+			table.insert(response.Shop, {
+				ItemId = itemId,
+				Price = item.Price,
+				Stock = item.Stock,
+				RequiredLevel = item.RequiredLevel,
+			})
 		end
 	end
 	return true, "InteractionReady", response
@@ -90,18 +103,24 @@ end
 
 function NPCService.Purchase(player: Player, npcId: any, itemId: any, quantity: any)
 	if typeof(npcId) ~= "string" or typeof(itemId) ~= "string" or typeof(quantity) ~= "number" then return false, "InvalidRequest" end
-	if quantity ~= math.floor(quantity) or quantity < 1 or quantity > 10 then return false, "InvalidAmount" end
+	if quantity ~= quantity or quantity == math.huge or quantity ~= math.floor(quantity) or quantity < 1 or quantity > 10 then
+		return false, "InvalidAmount"
+	end
 	if not rateAllowed(player) then return false, "TooFast" end
 	local def = DEFINITIONS[npcId]
 	local item = if def and def.Shop then def.Shop[itemId] else nil
 	if not item then return false, "ItemNotSoldHere" end
 	if not validateNear(player, npcId) then return false, "TooFarOrWrongIsland" end
 	if quantity > item.Stock then return false, "OutOfStock" end
-	local spent, spendError = ProgressionService.SpendCoins(player, item.Price * quantity)
+	local level = math.max(1, math.floor(tonumber(player:GetAttribute("Level")) or 1))
+	if level < item.RequiredLevel then return false, "LevelRequirement" end
+
+	local totalPrice = item.Price * quantity
+	local spent, spendError = ProgressionService.SpendCoins(player, totalPrice)
 	if not spent then return false, spendError end
 	local added, addError = InventoryService.AddItem(player, itemId, quantity)
 	if not added then
-		ProgressionService.AddCoins(player, item.Price * quantity)
+		ProgressionService.AddCoins(player, totalPrice)
 		return false, addError
 	end
 	return true, "PurchaseComplete"
