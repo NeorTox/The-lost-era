@@ -301,7 +301,8 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 	local definition = EnemyCatalog.Get(bossId)
 	local spawnFolder = Workspace:FindFirstChild("BossSpawnPoints")
 	local spawnMarker = spawnFolder and spawnFolder:FindFirstChild("Generated_" .. islandId)
-	if not profile or not island or not definition or not spawnMarker or not spawnMarker:IsA("BasePart") then
+	if not profile or not island or not definition or definition.IsBoss ~= true
+		or not spawnMarker or not spawnMarker:IsA("BasePart") then
 		return
 	end
 	if player:GetAttribute("Level") == nil or profile.Level < island.EnemyLevelMax then
@@ -396,11 +397,13 @@ function BossService.Init()
 	for _, marker in ipairs(summonFolder:GetChildren()) do
 		if marker:IsA("BasePart") and marker:GetAttribute("Enabled") == true then
 			local islandId = marker:GetAttribute("IslandId")
-			local prompt = marker:FindFirstChildOfClass("ProximityPrompt")
+			local promptInstance = marker:FindFirstChild("BossChallengePrompt")
 			local spawnMarker = if typeof(islandId) == "string"
 				then spawnFolder:FindFirstChild("Generated_" .. islandId)
 				else nil
-			if prompt and spawnMarker and spawnMarker:IsA("BasePart") then
+			if promptInstance and promptInstance:IsA("ProximityPrompt")
+				and spawnMarker and spawnMarker:IsA("BasePart") then
+				local prompt: ProximityPrompt = promptInstance
 				prompt.Triggered:Connect(function(player)
 					startEncounter(player, marker, prompt)
 				end)
