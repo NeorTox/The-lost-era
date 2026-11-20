@@ -31,6 +31,9 @@ local function hasLineOfSight(character: Model, origin: Vector3, target: Model, 
 end
 
 function CombatService.TryAttack(player: Player, targetInstance: any): (boolean, string?)
+	if player:GetAttribute("InSafeZone") == true then
+		return false, "SafeZone"
+	end
 	if typeof(targetInstance) ~= "Instance" or not targetInstance:IsA("Model") or not EnemyService.IsEnemyModel(targetInstance)
 		or not targetInstance:IsDescendantOf(Workspace) then
 		return false, "InvalidTarget"
