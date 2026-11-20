@@ -125,6 +125,8 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Confirm each main island has a boss spawn marker at its configured boss level; BossService is not implemented yet.
 - [ ] Confirm the Sunset Bay Mira and Toma placeholder NPC models are found by NPCService and pass proximity checks.
 - [ ] Confirm quest, shop, safe-zone, boss-arena and treasure placeholders are positioned within their island boundaries.
+- [ ] Confirm safe-zone markers set InSafeZone while the player stands within their location marker and clear it on exit.
+- [ ] Confirm enemy AI ignores players inside safe zones and basic attacks/offensive skills are rejected there; Healing Pulse remains available.
 - [ ] Confirm special area IDs persist through profile saves and loads.
 
 ## Portals and world
