@@ -1,6 +1,7 @@
 --!strict
 -- Quest progress and rewards are validated and persisted on the server.
 
+local Config = require(script.Parent.Config)
 local DataService = require(script.Parent.DataService)
 local ProgressionService = require(script.Parent.ProgressionService)
 
@@ -12,8 +13,8 @@ local Quests = {
 		Name = "Welcome to Sunset Bay",
 		Description = "Defeat 3 training slimes.",
 		Target = 3,
-		XPReward = 75,
-		CoinReward = 25,
+		XPReward = Config.Economy.QuestRewards.WelcomeToSunsetBay.XP,
+		CoinReward = Config.Economy.QuestRewards.WelcomeToSunsetBay.Coins,
 	},
 }
 
