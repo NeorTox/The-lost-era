@@ -26,7 +26,7 @@ This status file follows the current master checklist: **THE LOST ERA — Echoes
 | 20 | PvP | Not implemented | Arena rules, matchmaking/duels, combat restrictions and rewards remain |
 | 21 | Memory Training | Not implemented | Training activities, progression, rewards and Memory Training Island remain |
 | 22 | Special Collectibles and Exploration | Not implemented | Hidden treasures, collectibles, secrets and exploration rewards remain |
-| 23 | UI | Partial | Skill menu/hotbar and sprint touch action exist; full HUD, inventory, quests, shops, NPC dialogue, settings and responsive polish remain |
+| 23 | UI | Partial | Skill menu/hotbar, sprint touch action and basic responsive player status HUD exist; inventory, quests, shops, NPC dialogue, settings and full visual polish remain |
 | 24 | Audio, Animations and Effects | Not implemented | Asset selection, animation sets, soundscape, combat effects and optimization remain |
 | 25 | Multiplayer | Partial | Server services and remotes are structured for multiplayer; concurrent-player, persistence contention and gameplay tests remain |
 | 26 | Mobile Optimization | Partial | Touch skill controls and sprint action exist; device layout/performance, input testing and low-end device optimization remain |
