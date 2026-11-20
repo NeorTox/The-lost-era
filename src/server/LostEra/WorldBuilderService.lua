@@ -305,6 +305,17 @@ local function buildArea(
 		0.16
 	)
 	createBillboard(pad, displayName, Color3.fromRGB(255, 255, 255))
+	local safeLabel = createPart(
+		areaModel,
+		"SafeZoneLabelAnchor",
+		Vector3.new(1, 1, 1),
+		CFrame.new(islandCenter + Vector3.new(0, surfaceY + 7, 24)),
+		theme,
+		Enum.Material.SmoothPlastic,
+		1,
+		false
+	)
+	createBillboard(safeLabel, "SAFE ZONE", Color3.fromRGB(137, 235, 183))
 
 	local safeMarker = ensureMarker(
 		ensureFolder(Workspace, "SafeZones"),
