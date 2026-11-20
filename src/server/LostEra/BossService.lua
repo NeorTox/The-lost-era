@@ -304,9 +304,23 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 	local islandId = marker:GetAttribute("IslandId")
 	local bossId = marker:GetAttribute("BossId")
 	if typeof(islandId) ~= "string" or typeof(bossId) ~= "string" then return end
-	if marker:GetAttribute("Enabled") ~= true then return end
+	if marker:GetAttribute("Enabled") ~= true or not marker:IsDescendantOf(Workspace) then return end
+	if prompt.Parent ~= marker or not prompt.Enabled then return end
 	if busyByIsland[islandId] then return end
 	if player:GetAttribute("CurrentIsland") ~= islandId then return end
+
+	-- Treat ProximityPrompt as input, not authorization: validate the living
+	-- character and interaction distance again on the server.
+	local character = player.Character
+	local playerHumanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local playerRoot = character and character:FindFirstChild("HumanoidRootPart")
+	if not playerHumanoid or playerHumanoid.Health <= 0 or not playerRoot or not playerRoot:IsA("BasePart") then
+		return
+	end
+	if (playerRoot.Position - marker.Position).Magnitude > 14 then
+		return
+	end
+
 	-- Use the actual marker bounds rather than trusting a potentially stale
 	-- replicated/cached InSafeZone attribute.
 	if SafeZoneService.IsPlayerInSafeZone(player) then return end
