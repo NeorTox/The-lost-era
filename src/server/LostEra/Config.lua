@@ -52,6 +52,12 @@ Config.Economy = {
 -- Canonical 11-island route.
 -- Each island has a normal-enemy level band and a boss challenge level.
 -- The next island opens three levels after the previous island's boss level.
+Config.CentralArea = { Id = "CentralArea", Name = "Central Area", UnlockLevel = 1 }
+Config.SpecialAreas = {
+	{ Id = "EchoBattleArena", Name = "Echo Battle Arena", UnlockLevel = 1 },
+	{ Id = "MemoryTrainingIsland", Name = "Memory Training Island", UnlockLevel = 1 },
+}
+
 Config.Islands = {
 	{ Id = "SunsetBay", Name = "Sunset Bay", UnlockLevel = 1, EnemyLevelMin = 1, EnemyLevelMax = 24, BossLevel = 25 },
 	{ Id = "PixelCity", Name = "Pixel City", UnlockLevel = 28, EnemyLevelMin = 28, EnemyLevelMax = 51, BossLevel = 52 },
@@ -82,6 +88,18 @@ function Config.GetIslandById(islandId: string)
 		end
 	end
 	return nil
+end
+
+function Config.GetWorldLocationById(locationId: string)
+	if locationId == Config.CentralArea.Id then
+		return Config.CentralArea
+	end
+	for _, area in ipairs(Config.SpecialAreas) do
+		if area.Id == locationId then
+			return area
+		end
+	end
+	return Config.GetIslandById(locationId)
 end
 
 function Config.GetIslandIndex(islandId: string): number?
