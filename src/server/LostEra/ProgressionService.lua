@@ -111,7 +111,9 @@ function ProgressionService.AddCoins(player: Player, amount: number): boolean
 end
 
 function ProgressionService.SpendCoins(player: Player, amount: number): (boolean, string?)
-	return spendBalance(player, "Coins", "Coins", amount)
+	local ok, reason = spendBalance(player, "Coins", "Coins", amount)
+	if reason == "InsufficientFunds" then return false, "InsufficientCoins" end
+	return ok, reason
 end
 
 function ProgressionService.AddSkillPoints(player: Player, amount: number): boolean
@@ -119,7 +121,9 @@ function ProgressionService.AddSkillPoints(player: Player, amount: number): bool
 end
 
 function ProgressionService.SpendSkillPoints(player: Player, amount: number): (boolean, string?)
-	return spendBalance(player, "SkillPoints", "SkillPoints", amount)
+	local ok, reason = spendBalance(player, "SkillPoints", "SkillPoints", amount)
+	if reason == "InsufficientFunds" then return false, "InsufficientSkillPoints" end
+	return ok, reason
 end
 
 function ProgressionService.AddMemoryCrystals(player: Player, amount: number): boolean
@@ -127,7 +131,9 @@ function ProgressionService.AddMemoryCrystals(player: Player, amount: number): b
 end
 
 function ProgressionService.SpendMemoryCrystals(player: Player, amount: number): (boolean, string?)
-	return spendBalance(player, "MemoryCrystals", "MemoryCrystals", amount)
+	local ok, reason = spendBalance(player, "MemoryCrystals", "MemoryCrystals", amount)
+	if reason == "InsufficientFunds" then return false, "InsufficientMemoryCrystals" end
+	return ok, reason
 end
 
 function ProgressionService.AddVoidEssence(player: Player, amount: number): boolean
@@ -135,7 +141,9 @@ function ProgressionService.AddVoidEssence(player: Player, amount: number): bool
 end
 
 function ProgressionService.SpendVoidEssence(player: Player, amount: number): (boolean, string?)
-	return spendBalance(player, "VoidEssence", "VoidEssence", amount)
+	local ok, reason = spendBalance(player, "VoidEssence", "VoidEssence", amount)
+	if reason == "InsufficientFunds" then return false, "InsufficientVoidEssence" end
+	return ok, reason
 end
 
 function ProgressionService.CanAccessIsland(player: Player, islandId: string): boolean
