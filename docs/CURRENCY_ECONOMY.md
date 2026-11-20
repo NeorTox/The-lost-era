@@ -26,7 +26,7 @@ All currently implemented reward values are defined in `Config.Economy`. This pr
 | Iron Blade (level 30) | 900 | Coins |
 | Whirlwind / Healing Pulse / Arcane Burst | 2 / 2 / 3 points | Skill Points |
 
-Enemy rewards are assigned server-side at spawn and paid by the server's death handler to the player recorded as the last attacker. The current starter quest cannot be claimed twice because its completion ID is persisted. Shop purchases spend Coins before adding inventory; the price is refunded if the inventory addition fails.
+Enemy rewards are assigned server-side at spawn and paid by the server's death handler to the player recorded as the last attacker. The current starter quest cannot be claimed twice because its completion ID is persisted. Shop purchases spend Coins before adding inventory; the price is refunded if the inventory addition fails. The current `Stock` field is a per-purchase quantity ceiling, not a shared world-wide stock counter.
 
 ## Unimplemented currency routes
 
