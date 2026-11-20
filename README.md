@@ -40,6 +40,10 @@ src/
 default.project.json
 ```
 
+## Phase tracking
+
+See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for the current 29-phase implementation status and remaining release work.
+
 ## Setup
 
 1. Install Roblox Studio.
@@ -80,12 +84,7 @@ Maximum level: **300**.
 
 ## Roadmap
 
-1. Core server foundation and player persistence.
-2. Complete combat, enemy AI, and spawn-point integration.
-3. Harden persistence and persist quest objective progress.
-4. Portals, island world generation, and NPC content.
-5. Boss mechanics, drops, weapons, and abilities.
-6. Client UI, effects, and end-to-end playtesting.
+The 29-phase master checklist is tracked in [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md). The immediate priority is to validate the new player lifecycle and session-locked persistence in a private Roblox test place before expanding the world and progression systems.
 
 
 ## Player movement and stamina
