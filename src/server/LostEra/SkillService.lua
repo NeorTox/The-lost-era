@@ -155,6 +155,9 @@ function SkillService.Equip(player: Player, skillId: any, slot: any): (boolean, 
 	if existingSlot and existingSlot ~= slot then
 		return false, "AlreadyEquipped"
 	end
+	if slot > #profile.EquippedSkills + 1 then
+		return false, "FillSlotsInOrder"
+	end
 
 	profile.EquippedSkills[slot] = skillId
 	return true, nil
