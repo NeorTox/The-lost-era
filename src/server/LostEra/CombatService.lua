@@ -56,6 +56,10 @@ function CombatService.TryAttack(player: Player, targetInstance: any): (boolean,
 	if player:GetAttribute("CurrentIsland") ~= targetInstance:GetAttribute("IslandId") then
 		return false, "WrongIsland"
 	end
+	if targetInstance:GetAttribute("IsBoss") == true
+		and not BossService.CanPlayerDamage(player, targetInstance) then
+		return false, "OutsideBossArena"
+	end
 	local weapon = WeaponService.GetStats(player)
 	if (enemyRoot.Position - playerRoot.Position).Magnitude > weapon.AttackRange then
 		return false, "OutOfRange"
