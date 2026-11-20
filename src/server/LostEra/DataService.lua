@@ -270,7 +270,7 @@ function DataService.LoadPlayer(player: Player)
 	loading[userId] = true
 	local token = HttpService:GenerateGUID(false)
 	local key = keyFor(userId)
-	local loadedProfile = nil
+	local loadedProfile: {[string]: any}? = nil
 
 	for lockAttempt = 1, LOAD_LOCK_ATTEMPTS do
 		if player.Parent ~= Players then
