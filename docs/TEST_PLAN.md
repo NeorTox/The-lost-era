@@ -60,7 +60,7 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Missing portal destinations safely refuse travel.
 
 ## Known implementation boundary
-NPC models, portal parts, enemy rigs, spawn points, client UI, animations and in-Studio multiplayer tests still need to be created/performed. This plan is a test checklist, not a claim that those tests have passed.
+NPC models, portal parts, enemy rigs, spawn points, the full player HUD, inventory/quest/shop interaction panels, animation assets and in-Studio multiplayer tests still need to be created/performed. A skill hotbar/menu and a sprint touch action now exist, but they do not constitute the complete UI phase. This plan is a test checklist, not a claim that those tests have passed.
 
 
 ## Core player lifecycle and movement
