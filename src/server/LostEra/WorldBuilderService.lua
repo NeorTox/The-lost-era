@@ -322,7 +322,7 @@ local function buildArea(
 		"Generated_" .. locationId,
 		islandCenter + Vector3.new(0, surfaceY + 1, 0),
 		{ IslandId = locationId, SafeZoneId = locationId, MarkerType = "SafeZone" },
-		Vector3.new(56, 1, 56)
+		Vector3.new(132, 1, 112)
 	)
 	safeMarker.Transparency = 1
 	safeMarker.CanTouch = false
