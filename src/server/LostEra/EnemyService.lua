@@ -40,6 +40,14 @@ local function boundedInteger(value: any, fallback: number, minimum: number, max
 	return math.floor(boundedNumber(value, fallback, minimum, maximum))
 end
 
+local function hasLineOfSight(enemy: Model, targetCharacter: Model, origin: Vector3, destination: Vector3): boolean
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { enemy, targetCharacter }
+	params.IgnoreWater = true
+	return Workspace:Raycast(origin, destination - origin, params) == nil
+end
+
 local function findNearestPlayer(
 	position: Vector3,
 	islandId: string,
@@ -107,17 +115,20 @@ local function startAI(enemy: Model)
 					and target:GetAttribute("CurrentIsland") == islandId
 					and target:GetAttribute("InSafeZone") ~= true
 					and not SafeZoneService.IsPlayerInSafeZone(target) then
-					if distance <= attackRange then
+					local canAttack = distance <= attackRange
+						and hasLineOfSight(enemy, targetCharacter, root.Position, targetRoot.Position)
+					if canAttack then
 						humanoid:MoveTo(root.Position)
 						if os.clock() >= nextAttackAt then
 							nextAttackAt = os.clock() + attackCooldown
-							-- Recheck protection immediately before damage is applied.
+							-- Recheck position, island and protection immediately before damage.
 							if target:GetAttribute("CurrentIsland") == islandId
 								and target:GetAttribute("InSafeZone") ~= true
 								and not SafeZoneService.IsPlayerInSafeZone(target)
 								and target.Character == targetCharacter
 								and targetHumanoid.Health > 0
-								and (targetRoot.Position - root.Position).Magnitude <= attackRange + 1 then
+								and (targetRoot.Position - root.Position).Magnitude <= attackRange + 1
+								and hasLineOfSight(enemy, targetCharacter, root.Position, targetRoot.Position) then
 								targetHumanoid:TakeDamage(attackDamage)
 							end
 						end
@@ -247,6 +258,24 @@ function EnemyService.Spawn(
 	humanoid.MaxHealth = maxHealth
 	humanoid.Health = maxHealth
 	humanoid.WalkSpeed = walkSpeed
+
+	local head = enemy:FindFirstChild("Head")
+	local nameplate = head and head:FindFirstChild("EnemyNameplate")
+	local healthTrack = nameplate and nameplate:FindFirstChild("HealthTrack")
+	local fillInstance = healthTrack and healthTrack:FindFirstChild("Fill")
+	if fillInstance and fillInstance:IsA("Frame") then
+		local healthFill = fillInstance
+		local function syncHealthBar()
+			local ratio = math.clamp(humanoid.Health / math.max(1, humanoid.MaxHealth), 0, 1)
+			healthFill.Size = UDim2.fromScale(ratio, 1)
+			healthFill.BackgroundColor3 = if ratio > 0.5
+				then Color3.fromRGB(78, 205, 112)
+				elseif ratio > 0.25 then Color3.fromRGB(235, 174, 70)
+				else Color3.fromRGB(220, 76, 76)
+		end
+		humanoid.HealthChanged:Connect(syncHealthBar)
+		syncHealthBar()
+	end
 	if enemy.PrimaryPart == nil then enemy.PrimaryPart = root end
 	enemy.Parent = Workspace
 	enemy:PivotTo(spawnCFrame)
