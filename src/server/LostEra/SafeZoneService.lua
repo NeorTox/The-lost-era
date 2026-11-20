@@ -34,6 +34,10 @@ local function isInsideZone(player: Player): boolean
 		and math.abs(localPosition.Y) <= 14
 end
 
+function SafeZoneService.IsPlayerInSafeZone(player: Player): boolean
+	return isInsideZone(player)
+end
+
 function SafeZoneService.SyncPlayer(player: Player)
 	local inSafeZone = isInsideZone(player)
 	if player:GetAttribute("InSafeZone") ~= inSafeZone then
