@@ -12,6 +12,7 @@ local EnemyCatalog = require(script.Parent.EnemyCatalog)
 local ProgressionService = require(script.Parent.ProgressionService)
 local QuestService = require(script.Parent.QuestService)
 local InventoryService = require(script.Parent.InventoryService)
+local SafeZoneService = require(script.Parent.SafeZoneService)
 
 local EnemyService = {}
 local activeEnemies: {[Model]: boolean} = {}
@@ -55,6 +56,7 @@ local function findNearestPlayer(
 		if humanoid and humanoid.Health > 0 and root and root:IsA("BasePart")
 			and player:GetAttribute("CurrentIsland") == islandId
 			and player:GetAttribute("InSafeZone") ~= true
+			and not SafeZoneService.IsPlayerInSafeZone(player)
 			and (root.Position - homePosition).Magnitude <= chaseLeash then
 			local distance = (root.Position - position).Magnitude
 			if distance < nearestDistance then
@@ -103,7 +105,8 @@ local function startAI(enemy: Model)
 				local targetRoot = targetCharacter:FindFirstChild("HumanoidRootPart")
 				if targetHumanoid and targetHumanoid.Health > 0 and targetRoot and targetRoot:IsA("BasePart")
 					and target:GetAttribute("CurrentIsland") == islandId
-					and target:GetAttribute("InSafeZone") ~= true then
+					and target:GetAttribute("InSafeZone") ~= true
+					and not SafeZoneService.IsPlayerInSafeZone(target) then
 					if distance <= attackRange then
 						humanoid:MoveTo(root.Position)
 						if os.clock() >= nextAttackAt then
@@ -111,8 +114,10 @@ local function startAI(enemy: Model)
 							-- Recheck protection immediately before damage is applied.
 							if target:GetAttribute("CurrentIsland") == islandId
 								and target:GetAttribute("InSafeZone") ~= true
+								and not SafeZoneService.IsPlayerInSafeZone(target)
 								and target.Character == targetCharacter
-								and targetHumanoid.Health > 0 then
+								and targetHumanoid.Health > 0
+								and (targetRoot.Position - root.Position).Magnitude <= attackRange + 1 then
 								targetHumanoid:TakeDamage(attackDamage)
 							end
 						end
@@ -268,7 +273,7 @@ function EnemyService.Spawn(
 			local chance = boundedNumber(enemy:GetAttribute("DropChance"), 0, 0, 1)
 			local minimum = boundedInteger(enemy:GetAttribute("DropMin"), 1, 1, 99)
 			local maximum = boundedInteger(enemy:GetAttribute("DropMax"), minimum, minimum, 99)
-			if typeof(itemId) == "string" and rewardRandom:NextNumber() <= chance then
+			if typeof(itemId) == "string" and chance > 0 and rewardRandom:NextNumber() < chance then
 				local amount = rewardRandom:NextInteger(minimum, maximum)
 				local added, reason = InventoryService.AddItem(killer, itemId, amount)
 				if not added then
