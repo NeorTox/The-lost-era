@@ -21,7 +21,12 @@ gui.Parent = playerGui
 local panel = Instance.new("Frame")
 panel.Name = "StatusPanel"
 panel.Position = UDim2.fromOffset(12, 12)
-panel.Size = UDim2.fromOffset(306, 184)
+panel.Size = UDim2.new(0.9, 0, 0, 184)
+
+local panelSizeConstraint = Instance.new("UISizeConstraint")
+panelSizeConstraint.MinSize = Vector2.new(220, 184)
+panelSizeConstraint.MaxSize = Vector2.new(306, 184)
+panelSizeConstraint.Parent = panel
 panel.BackgroundColor3 = Color3.fromRGB(15, 20, 31)
 panel.BackgroundTransparency = 0.12
 panel.BorderSizePixel = 0
