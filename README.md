@@ -4,7 +4,7 @@ A Roblox anime adventure RPG built with **Luau** for Roblox Studio, targeting mo
 
 ## Project status
 
-This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
+This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, a procedural Central Area/11-island/special-area greybox builder, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
 
 Roblox Studio runtime tests are still required before systems can be considered release-ready.
 
@@ -22,6 +22,7 @@ src/
 │   └── LostEra/
 │       ├── Config.lua
 │       ├── CharacterService.lua
+│       ├── WorldBuilderService.lua
 │       ├── DataService.lua
 │       ├── ProgressionService.lua
 │       ├── InventoryService.lua
@@ -58,7 +59,9 @@ See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation stat
 
 ## Canonical world roster
 
-The current world specification contains 11 main islands, in this order:
+The server now generates a navigable greybox containing the Central Area, the 11 main islands below, Echo Battle Arena and Memory Training Island. These are structural blockouts; final terrain, art, combat-safe logic and collectible interactions remain future work.
+
+The 11 main islands are:
 
 1. Sunset Bay
 2. Pixel City
