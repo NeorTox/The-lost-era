@@ -228,6 +228,7 @@ function EnemyService.Spawn(
 
 	enemy:SetAttribute("IsLostEraEnemy", true)
 	enemy:SetAttribute("EnemyLevel", safeLevel)
+	enemy:SetAttribute("EnemyTemplateName", templateName)
 	enemy:SetAttribute("IslandId", islandId)
 	enemy:SetAttribute("IsBoss", isBoss)
 	enemy:SetAttribute("XPReward", xpReward)
@@ -265,7 +266,8 @@ function EnemyService.Spawn(
 		if killer then
 			ProgressionService.AddXP(killer, enemy:GetAttribute("XPReward") or 0)
 			ProgressionService.AddCoins(killer, enemy:GetAttribute("CoinReward") or 0)
-			if enemy:GetAttribute("IslandId") == "SunsetBay" then
+			if enemy:GetAttribute("IslandId") == "SunsetBay"
+				and enemy:GetAttribute("EnemyTemplateName") == "TrainingSlime" then
 				QuestService.AddProgress(killer, "WelcomeToSunsetBay", 1)
 			end
 
