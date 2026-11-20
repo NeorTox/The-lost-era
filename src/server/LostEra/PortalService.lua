@@ -2,7 +2,7 @@
 -- Server-authoritative island portal handling.
 -- Portal parts live under Workspace/IslandPortals.
 -- Required attributes on each BasePart:
---   DestinationIsland (string): Config island Id.
+--   DestinationIsland (string): canonical island, CentralArea or special-area Id.
 -- Optional attributes:
 --   DestinationSpawnName (string): spawn part name; defaults to "Spawn".
 --
@@ -69,7 +69,7 @@ local function activatePortal(portal: BasePart, hit: BasePart)
 		return
 	end
 
-	local islandConfig = Config.GetIslandById(destinationIsland)
+	local islandConfig = Config.GetWorldLocationById(destinationIsland)
 	if not islandConfig then
 		warn("[TheLostEra] Portal points to unknown island:", destinationIsland)
 		return
