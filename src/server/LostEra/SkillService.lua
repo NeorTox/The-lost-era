@@ -8,6 +8,7 @@ local DataService = require(script.Parent.DataService)
 local ProgressionService = require(script.Parent.ProgressionService)
 local WeaponService = require(script.Parent.WeaponService)
 local EnemyService = require(script.Parent.EnemyService)
+local BossService = require(script.Parent.BossService)
 
 local SkillService = {}
 
@@ -257,6 +258,7 @@ function SkillService.Use(player: Player, skillId: any): (boolean, string, any?)
 				and hasLineOfSight(character, enemy, root.Position, enemyRoot.Position) then
 				hitEnemies[enemy] = true
 				enemy:SetAttribute("LastHitUserId", player.UserId)
+				BossService.RecordDamage(player, enemy, baseDamage)
 				enemyHumanoid:TakeDamage(baseDamage)
 				hitCount += 1
 				totalDamage += baseDamage
