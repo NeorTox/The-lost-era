@@ -4,7 +4,7 @@ A Roblox RPG built with **Luau** for Roblox Studio.
 
 ## Project status
 
-This repository is the source of truth for the game. Development is being built in tested milestones. The current source includes island configuration, player profile persistence, progression, inventory, starter quests, server-validated melee combat, basic enemy AI, and configurable enemy spawn markers.
+This repository is the source of truth for the game. Development is being built in tested milestones. The current source includes server-validated gameplay systems, session-locked player persistence, level progression, inventory, starter quests, melee combat, basic enemy AI, configurable enemy spawn markers, character lifecycle defaults, and stamina-based sprinting. Roblox Studio runtime tests are still required before a release-ready status can be claimed.
 
 ## Development environment
 
@@ -19,6 +19,7 @@ src/
 └── server/
     └── LostEra/
         ├── Config.lua
+        ├── CharacterService.lua
         ├── DataService.lua
         ├── ProgressionService.lua
         ├── InventoryService.lua
@@ -27,7 +28,8 @@ src/
         ├── EnemySpawnService.lua
         ├── CombatService.lua
         ├── RemoteService.lua
-        └── Main.server.lua
+        ├── Main.server.lua
+        └── RemoteService.lua
 default.project.json
 ```
 
@@ -71,6 +73,10 @@ Maximum level: **300**.
 5. Boss mechanics, drops, weapons, and abilities.
 6. Client UI, effects, and end-to-end playtesting.
 
+
+## Player movement and stamina
+
+The server configures baseline health, walk speed and jump power for spawned characters. Sprinting is requested by the client but validated and simulated on the server; stamina drains only while moving and regenerates when sprinting is inactive. `src/client/SprintController.client.lua` uses Left Shift on keyboard and a ContextActionService touch button on supported mobile devices.
 
 ## Client controls
 
