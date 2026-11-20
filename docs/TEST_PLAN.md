@@ -61,3 +61,25 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 
 ## Known implementation boundary
 NPC models, portal parts, enemy rigs, spawn points, client UI, animations and in-Studio multiplayer tests still need to be created/performed. This plan is a test checklist, not a claim that those tests have passed.
+
+
+## Core player lifecycle and movement
+- [ ] A loaded player receives MaxHealth 100, MaxEnergy 100, MaxStamina 100, WalkSpeed 16 and JumpPower 50.
+- [ ] Existing character receives the baseline values after profile load; newly spawned and respawned characters receive the same values.
+- [ ] Character death stops sprinting; respawn restores full health and stamina.
+- [ ] Sprint starts only for a loaded player with a living character and positive stamina.
+- [ ] Sprint speed is 24; stamina drains at the configured rate only while the character is moving.
+- [ ] Stamina regenerates while not sprinting and cannot exceed MaxStamina.
+- [ ] Sprint automatically stops at zero stamina and can be released with Left Shift or the mobile touch button.
+- [ ] Repeated player initialization does not create duplicate stamina loops or CharacterAdded connections.
+
+## Session-locked persistence
+- [ ] Loading a profile atomically acquires its session lock in DataStore metadata.
+- [ ] A second server cannot load a profile while another unexpired session lock is active.
+- [ ] Autosaves refresh the lock timestamp and only save when the current server still owns the lock.
+- [ ] A server that loses its lock cannot overwrite data saved by the new owner.
+- [ ] Final player-leave save releases the lock only after a successful save.
+- [ ] Failed final saves leave the lock in place until its expiry rather than exposing stale data.
+- [ ] BindToClose waits for bounded final save/unlock operations rather than relying on a fixed delay.
+- [ ] Transient DataStore errors retry with bounded exponential backoff; permanent load failure never creates and saves a fresh default profile over existing data.
+- [ ] Existing SchemaVersion 3 records load without changing their profile fields or requiring a migration.
