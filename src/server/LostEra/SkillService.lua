@@ -3,6 +3,7 @@
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
+local Config = require(script.Parent.Config)
 local DataService = require(script.Parent.DataService)
 local WeaponService = require(script.Parent.WeaponService)
 local EnemyService = require(script.Parent.EnemyService)
