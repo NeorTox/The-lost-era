@@ -12,6 +12,7 @@ local ItemDefinitions = {
 	SlimeGel = { DisplayName = "Slime Gel", Stackable = true, MaxStack = 999 },
 	DriftwoodScrap = { DisplayName = "Driftwood Scrap", Stackable = true, MaxStack = 999 },
 	TideShell = { DisplayName = "Tide Shell", Stackable = true, MaxStack = 999 },
+	TideWardenSigil = { DisplayName = "Tide Warden Sigil", Stackable = false, MaxStack = 1 },
 	TrainingBlade = { DisplayName = "Training Blade", Stackable = false, MaxStack = 1, IsWeapon = true },
 	BronzeSword = { DisplayName = "Bronze Sword", Stackable = false, MaxStack = 1, IsWeapon = true },
 	IronBlade = { DisplayName = "Iron Blade", Stackable = false, MaxStack = 1, IsWeapon = true },
