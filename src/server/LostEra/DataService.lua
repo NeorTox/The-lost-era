@@ -1,15 +1,27 @@
 --!strict
--- Server-only persistence. DataStore calls must never be exposed to clients.
+-- Server-only persistence with per-player session locks and ordered saves.
+-- Existing profile values remain unchanged; session-lock state is stored in DataStore metadata.
 
 local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
+local HttpService = game:GetService("HttpService")
 
 local Config = require(script.Parent.Config)
 local Store = DataStoreService:GetDataStore(Config.DataStoreName)
 
 local DataService = {}
 local profiles: {[number]: {[string]: any}} = {}
+local sessionTokens: {[number]: string} = {}
 local saving: {[number]: boolean} = {}
+local loading: {[number]: boolean} = {}
+local releasing: {[number]: boolean} = {}
+
+local LOCK_EXPIRY_SECONDS = 180
+local LOAD_LOCK_ATTEMPTS = 12
+local LOCK_RETRY_INTERVAL = 2
+local DATASTORE_RETRIES = 4
+local RETRY_BASE_DELAY = 1
+local RETRY_MAX_DELAY = 8
 
 local VALID_ITEMS = {
 	HealthPotion = 99,
@@ -73,7 +85,7 @@ local function sanitizeInventory(value: any): {[string]: number}
 	for itemId, rawAmount in pairs(value) do
 		local cap = if typeof(itemId) == "string" then VALID_ITEMS[itemId] else nil
 		local amount = tonumber(rawAmount)
-		if cap and amount and amount == amount and amount > 0 then
+		if cap and amount and amount == amount and amount > 0 and amount < math.huge then
 			result[itemId] = math.clamp(math.floor(amount), 0, cap)
 			if result[itemId] == 0 then
 				result[itemId] = nil
@@ -91,7 +103,7 @@ local function sanitizeQuestProgress(value: any): {[string]: number}
 	for questId, progress in pairs(value) do
 		if typeof(questId) == "string" and #questId <= 100 then
 			local safeProgress = tonumber(progress)
-			if safeProgress and safeProgress == safeProgress then
+			if safeProgress and safeProgress == safeProgress and safeProgress < math.huge then
 				result[questId] = math.clamp(math.floor(safeProgress), 0, 1000000)
 			end
 		end
@@ -106,8 +118,10 @@ local function sanitizeProfile(raw: any)
 	end
 
 	profile.Level = math.clamp(math.floor(tonumber(raw.Level) or 1), 1, Config.MaxLevel)
-	profile.XP = math.max(0, math.floor(tonumber(raw.XP) or 0))
-	profile.Coins = math.max(0, math.floor(tonumber(raw.Coins) or 0))
+	local rawXP = tonumber(raw.XP) or 0
+	profile.XP = if rawXP == rawXP and rawXP < math.huge then math.max(0, math.floor(rawXP)) else 0
+	local rawCoins = tonumber(raw.Coins) or 0
+	profile.Coins = if rawCoins == rawCoins and rawCoins < math.huge then math.max(0, math.floor(rawCoins)) else 0
 	profile.CurrentIsland = if typeof(raw.CurrentIsland) == "string" and Config.GetIslandById(raw.CurrentIsland) then raw.CurrentIsland else "SunsetBay"
 	profile.Inventory = sanitizeInventory(raw.Inventory)
 	profile.CompletedQuests = sanitizeStringArray(raw.CompletedQuests)
@@ -173,20 +187,151 @@ local function cloneProfile(profile: {[string]: any})
 	return snapshot
 end
 
-function DataService.LoadPlayer(player: Player)
-	local ok, result = pcall(function()
-		return Store:GetAsync(keyFor(player.UserId))
-	end)
+local function copyMetadata(keyInfo: any): {[string]: any}
+	local result: {[string]: any} = {}
+	if keyInfo then
+		local current = keyInfo:GetMetadata()
+		if typeof(current) == "table" then
+			for key, value in pairs(current) do
+				result[key] = value
+			end
+		end
+	end
+	return result
+end
 
-	if not ok then
-		warn("[TheLostEra] Failed to load profile:", player.UserId, result)
-		player:Kick("Your data could not be loaded. Please rejoin shortly.")
-		return nil
+local function getUserIds(keyInfo: any, userId: number): {number}
+	local result: {number} = {}
+	if keyInfo then
+		for _, existingId in ipairs(keyInfo:GetUserIds()) do
+			table.insert(result, existingId)
+		end
+	end
+	if not table.find(result, userId) then
+		table.insert(result, userId)
+	end
+	return result
+end
+
+-- All operations for a profile key are serialized by the caller. Retries are
+-- performed in this same thread so an older failed write cannot overtake a newer one.
+local function updateWithRetries(
+	key: string,
+	transform: (any, any) -> (any, {number}?, {[string]: any}?),
+	userId: number,
+	operationName: string
+): (boolean, any, any)
+	for attempt = 1, DATASTORE_RETRIES do
+		local ok, value, keyInfo = pcall(function()
+			return Store:UpdateAsync(key, transform)
+		end)
+		if ok then
+			return true, value, keyInfo
+		end
+
+		warn(string.format(
+			"[TheLostEra] %s attempt %d/%d failed for %d: %s",
+			operationName,
+			attempt,
+			DATASTORE_RETRIES,
+			userId,
+			tostring(value)
+		))
+		if attempt < DATASTORE_RETRIES then
+			local delaySeconds = math.min(RETRY_MAX_DELAY, RETRY_BASE_DELAY * (2 ^ (attempt - 1)))
+			task.wait(delaySeconds + math.random() * math.min(1, delaySeconds * 0.25))
+		end
+	end
+	return false, nil, nil
+end
+
+local function waitForSaveSlot(userId: number)
+	while saving[userId] do
+		task.wait(0.05)
+	end
+	saving[userId] = true
+end
+
+function DataService.LoadPlayer(player: Player)
+	local userId = player.UserId
+	while loading[userId] do
+		if profiles[userId] then
+			return profiles[userId]
+		end
+		if player.Parent ~= Players then
+			return nil
+		end
+		task.wait(0.05)
+	end
+	if profiles[userId] then
+		return profiles[userId]
 	end
 
-	local profile = sanitizeProfile(result)
-	profiles[player.UserId] = profile
-	return profile
+	loading[userId] = true
+	local token = HttpService:GenerateGUID(false)
+	local key = keyFor(userId)
+	local loadedProfile = nil
+
+	for lockAttempt = 1, LOAD_LOCK_ATTEMPTS do
+		if player.Parent ~= Players then
+			break
+		end
+
+		local ok, storedValue, keyInfo = updateWithRetries(
+			key,
+			function(oldValue, currentKeyInfo)
+				local metadata = copyMetadata(currentKeyInfo)
+				local existingToken = metadata.SessionLockId
+				local lastRefresh = tonumber(metadata.SessionLockUpdatedAt)
+				if typeof(existingToken) == "string" and existingToken ~= token then
+					if not lastRefresh or os.time() - lastRefresh < LOCK_EXPIRY_SECONDS then
+						return nil
+					end
+				end
+
+				local newValue = if typeof(oldValue) == "table" then table.clone(oldValue) else defaultProfile()
+				metadata.SessionLockId = token
+				metadata.SessionLockUpdatedAt = tostring(os.time())
+				return newValue, getUserIds(currentKeyInfo, userId), metadata
+			end,
+			userId,
+			"Profile load/lock"
+		)
+
+		if not ok then
+			break
+		end
+
+		if typeof(storedValue) == "table" and keyInfo then
+			local metadata = copyMetadata(keyInfo)
+			if metadata.SessionLockId == token then
+				loadedProfile = sanitizeProfile(storedValue)
+				break
+			end
+		end
+
+		if lockAttempt < LOAD_LOCK_ATTEMPTS then
+			task.wait(LOCK_RETRY_INTERVAL + math.random() * 0.5)
+		end
+	end
+
+	if loadedProfile then
+		profiles[userId] = loadedProfile
+		sessionTokens[userId] = token
+		loading[userId] = nil
+		if player.Parent ~= Players then
+			DataService.ReleasePlayer(player)
+			return nil
+		end
+		return loadedProfile
+	end
+
+	loading[userId] = nil
+	if player.Parent == Players then
+		warn("[TheLostEra] Profile load was not completed; refusing to create an unlocked default session:", userId)
+		player:Kick("Your data is still active on another server or could not be reached. Please rejoin shortly.")
+	end
+	return nil
 end
 
 function DataService.GetProfile(player: Player)
@@ -195,40 +340,90 @@ end
 
 function DataService.SavePlayer(player: Player): boolean
 	local userId = player.UserId
-	while saving[userId] do
-		task.wait(0.05)
-	end
+	waitForSaveSlot(userId)
 
 	local profile = profiles[userId]
-	if not profile then
+	local token = sessionTokens[userId]
+	if not profile or not token then
+		saving[userId] = nil
 		return false
 	end
 
-	saving[userId] = true
 	profile.LastSaveAt = os.time()
 	local snapshot = cloneProfile(profile)
-
-	local ok, err = pcall(function()
-		Store:UpdateAsync(keyFor(userId), function(_oldValue)
-			return snapshot
-		end)
-	end)
+	local ok, savedValue, keyInfo = updateWithRetries(
+		keyFor(userId),
+		function(oldValue, currentKeyInfo)
+			if typeof(oldValue) ~= "table" then
+				return nil
+			end
+			local metadata = copyMetadata(currentKeyInfo)
+			if metadata.SessionLockId ~= token then
+				return nil
+			end
+			metadata.SessionLockUpdatedAt = tostring(os.time())
+			return cloneProfile(snapshot), getUserIds(currentKeyInfo, userId), metadata
+		end,
+		userId,
+		"Profile save"
+	)
 	saving[userId] = nil
 
 	if not ok then
-		warn("[TheLostEra] Failed to save profile:", userId, err)
+		warn("[TheLostEra] Profile save exhausted retries; lock will be left to expire:", userId)
+		return false
+	end
+	if typeof(savedValue) ~= "table" or not keyInfo or copyMetadata(keyInfo).SessionLockId ~= token then
+		warn("[TheLostEra] Profile save cancelled because this server no longer owns the session lock:", userId)
 		return false
 	end
 	return true
 end
 
+local function releaseSessionLock(userId: number, token: string): boolean
+	local ok, releasedValue = updateWithRetries(
+		keyFor(userId),
+		function(oldValue, currentKeyInfo)
+			if typeof(oldValue) ~= "table" then
+				return nil
+			end
+			local metadata = copyMetadata(currentKeyInfo)
+			if metadata.SessionLockId ~= token then
+				return nil
+			end
+			metadata.SessionLockId = nil
+			metadata.SessionLockUpdatedAt = nil
+			return oldValue, getUserIds(currentKeyInfo, userId), metadata
+		end,
+		userId,
+		"Session unlock"
+	)
+	return ok and typeof(releasedValue) == "table"
+end
+
 function DataService.ReleasePlayer(player: Player)
 	local userId = player.UserId
-	DataService.SavePlayer(player)
-	while saving[userId] do
+	while releasing[userId] do
 		task.wait(0.05)
 	end
+	if not profiles[userId] then
+		return
+	end
+
+	releasing[userId] = true
+	local token = sessionTokens[userId]
+	local saved = DataService.SavePlayer(player)
+	if saved and token then
+		if not releaseSessionLock(userId, token) then
+			warn("[TheLostEra] Session lock could not be released; it will expire automatically:", userId)
+		end
+	else
+		warn("[TheLostEra] Final save failed; session lock will be left in place until expiry:", userId)
+	end
+
 	profiles[userId] = nil
+	sessionTokens[userId] = nil
+	releasing[userId] = nil
 end
 
 function DataService.SaveAll()
@@ -240,7 +435,22 @@ function DataService.SaveAll()
 			pending -= 1
 		end)
 	end
+	while pending > 0 do
+		task.wait(0.05)
+	end
+end
 
+function DataService.ReleaseAll()
+	local pending = 0
+	for _, player in ipairs(Players:GetPlayers()) do
+		if profiles[player.UserId] then
+			pending += 1
+			task.spawn(function()
+				DataService.ReleasePlayer(player)
+				pending -= 1
+			end)
+		end
+	end
 	while pending > 0 do
 		task.wait(0.05)
 	end
