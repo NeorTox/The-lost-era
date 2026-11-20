@@ -4,7 +4,7 @@ A Roblox anime adventure RPG built with **Luau** for Roblox Studio, targeting mo
 
 ## Project status
 
-This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, basic enemy AI and spawn markers, portal handling, a procedural Central Area/11-island/special-area greybox builder with active safe zones, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
+This repository is the source of truth for the game's code. Development is built in incremental milestones. The current source includes session-locked player persistence, level progression, four persistent currencies, Config-driven starter enemy/quest rewards and shop prices, basic inventory and quests, server-validated combat and skills, a three-enemy Sunset Bay starter roster with generated blockout rigs, leash-aware AI, material drops and active spawn markers, portal handling, a procedural Central Area/11-island/special-area greybox builder with active safe zones, character lifecycle defaults, stamina-based sprinting, and a live player HUD.
 
 Roblox Studio runtime tests are still required before systems can be considered release-ready.
 
@@ -28,6 +28,8 @@ src/
 │       ├── ProgressionService.lua
 │       ├── InventoryService.lua
 │       ├── QuestService.lua
+│       ├── EnemyCatalog.lua
+│       ├── EnemyTemplateService.lua
 │       ├── EnemyService.lua
 │       ├── EnemySpawnService.lua
 │       ├── CombatService.lua
@@ -47,7 +49,7 @@ default.project.json
 
 ## Phase tracking
 
-See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist, [docs/CURRENCY_ECONOMY.md](docs/CURRENCY_ECONOMY.md) for the persistent currency model and implemented economy sources/sinks, and [docs/WORLD_GREYBOX.md](docs/WORLD_GREYBOX.md) for the generated world and marker contracts.
+See [docs/PHASE_STATUS.md](docs/PHASE_STATUS.md) for current implementation status across the 29-phase master checklist, [docs/CURRENCY_ECONOMY.md](docs/CURRENCY_ECONOMY.md) for the persistent currency model and implemented economy sources/sinks, and [docs/WORLD_GREYBOX.md](docs/WORLD_GREYBOX.md) for the generated world and marker contracts, and [docs/ENEMY_SYSTEM.md](docs/ENEMY_SYSTEM.md) for the Sunset Bay starter enemy roster and template contract.
 
 ## Setup
 
