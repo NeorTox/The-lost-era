@@ -99,6 +99,15 @@ local function startAI(enemy: Model)
 			local islandId = enemy:GetAttribute("IslandId")
 			if typeof(islandId) ~= "string" then break end
 
+			-- Boss phases can adjust combat values while this AI loop is running.
+			aggroRange = boundedNumber(enemy:GetAttribute("AggroRange"), aggroRange, 5, 250)
+			attackRange = boundedNumber(enemy:GetAttribute("AttackRange"), attackRange, 2, 20)
+			attackDamage = boundedInteger(enemy:GetAttribute("AttackDamage"), attackDamage, 1, 1000000)
+			attackCooldown = boundedNumber(enemy:GetAttribute("AttackCooldown"), attackCooldown, 0.25, 30)
+			chaseLeash = boundedNumber(enemy:GetAttribute("ChaseLeash"), chaseLeash, 20, 500)
+			local walkSpeed = boundedNumber(enemy:GetAttribute("WalkSpeed"), humanoid.WalkSpeed, 6, 32)
+			if humanoid.WalkSpeed ~= walkSpeed then humanoid.WalkSpeed = walkSpeed end
+
 			local target, distance = findNearestPlayer(
 				root.Position,
 				islandId,
@@ -248,6 +257,7 @@ function EnemyService.Spawn(
 	enemy:SetAttribute("AttackRange", attackRange)
 	enemy:SetAttribute("AttackDamage", damage)
 	enemy:SetAttribute("AttackCooldown", attackCooldown)
+	enemy:SetAttribute("WalkSpeed", walkSpeed)
 	enemy:SetAttribute("ChaseLeash", chaseLeash)
 	enemy:SetAttribute("HomePosition", spawnCFrame.Position)
 	enemy:SetAttribute("DropItemId", dropItemId)
@@ -292,7 +302,7 @@ function EnemyService.Spawn(
 		local killer = if isFiniteNumber(userId) and userId == math.floor(userId)
 			then Players:GetPlayerByUserId(userId)
 			else nil
-		if killer then
+		if killer and enemy:GetAttribute("IsBoss") ~= true then
 			ProgressionService.AddXP(killer, enemy:GetAttribute("XPReward") or 0)
 			ProgressionService.AddCoins(killer, enemy:GetAttribute("CoinReward") or 0)
 			if enemy:GetAttribute("IslandId") == "SunsetBay"
