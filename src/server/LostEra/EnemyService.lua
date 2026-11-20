@@ -119,13 +119,30 @@ function EnemyService.Spawn(templateName: string, spawnCFrame: CFrame, level: nu
 
 	local maxHealth = math.max(50, math.floor(settings.MaxHealth or (100 + safeLevel * 24)))
 	local damage = math.max(1, math.floor(settings.Damage or (5 + safeLevel * 1.4)))
+	local rewardConfig = Config.Economy.EnemyRewards
+	local defaultXPReward = rewardConfig.XPBase + safeLevel * rewardConfig.XPPerLevel
+	local defaultCoinReward = rewardConfig.CoinBase + safeLevel * rewardConfig.CoinPerLevel
+	local xpReward = if typeof(settings.XPReward) == "number"
+		and settings.XPReward == settings.XPReward
+		and settings.XPReward ~= math.huge
+		and settings.XPReward ~= -math.huge
+		and settings.XPReward >= 1
+		and settings.XPReward == math.floor(settings.XPReward)
+		then settings.XPReward else defaultXPReward
+	local coinReward = if typeof(settings.CoinReward) == "number"
+		and settings.CoinReward == settings.CoinReward
+		and settings.CoinReward ~= math.huge
+		and settings.CoinReward ~= -math.huge
+		and settings.CoinReward >= 0
+		and settings.CoinReward == math.floor(settings.CoinReward)
+		then settings.CoinReward else defaultCoinReward
 
 	enemy:SetAttribute("IsLostEraEnemy", true)
 	enemy:SetAttribute("EnemyLevel", safeLevel)
 	enemy:SetAttribute("IslandId", islandId)
 	enemy:SetAttribute("IsBoss", isBoss)
-	enemy:SetAttribute("XPReward", math.max(1, math.floor(settings.XPReward or (15 + safeLevel * 5))))
-	enemy:SetAttribute("CoinReward", math.max(0, math.floor(settings.CoinReward or (5 + safeLevel * 2))))
+	enemy:SetAttribute("XPReward", xpReward)
+	enemy:SetAttribute("CoinReward", coinReward)
 	enemy:SetAttribute("AggroRange", settings.AggroRange or 55)
 	enemy:SetAttribute("AttackRange", settings.AttackRange or 5)
 	enemy:SetAttribute("AttackDamage", damage)
