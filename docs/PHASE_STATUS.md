@@ -44,7 +44,8 @@ The current work focused on closing the most important early-game foundation gap
 - Character spawning and respawning apply baseline health and movement values.
 - Sprint stamina is controlled by the server and exposed through keyboard and mobile touch input.
 - Quest objective progress already lives in the profile and is included in save snapshots.
-- Player data now migrates additively from schema v3 to schema v4 with persistent Memory Crystal and Void Essence balances defaulting to zero.\n- The canonical 11-island progression schedule is centralized in Config.lua; old island IDs fall back to the highest island unlocked by the saved player level.
+- Player data now migrates additively from schema v3 to schema v4 with persistent Memory Crystal and Void Essence balances defaulting to zero.
+- The canonical 11-island progression schedule is centralized in Config.lua; old island IDs fall back to the highest island unlocked by the saved player level.
 - Enemy spawn markers and enemy spawning now validate island IDs and level bands against the shared progression configuration.
 - Existing enemy and quest reward values plus shop prices are centralized in Config.Economy and validated at server startup; Memory Crystal and Void Essence are reserved for future systems.
 
