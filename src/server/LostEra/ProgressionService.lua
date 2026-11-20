@@ -11,6 +11,7 @@ local function sync(player: Player, profile)
 	player:SetAttribute("XP", profile.XP)
 	player:SetAttribute("XPToNextLevel", if profile.Level >= Config.MaxLevel then 0 else Config.GetXPToNextLevel(profile.Level))
 	player:SetAttribute("Coins", profile.Coins)
+	player:SetAttribute("SkillPoints", profile.SkillPoints or 0)
 	local island = Config.GetIslandForLevel(profile.Level)
 	player:SetAttribute("RecommendedIsland", island.Id)
 end
@@ -49,6 +50,7 @@ function ProgressionService.AddXP(player: Player, amount: number): (boolean, num
 		profile.Level = Config.MaxLevel
 		profile.XP = 0
 	end
+	profile.SkillPoints = math.min(Config.MaxLevel, (profile.SkillPoints or 0) + levelsGained)
 
 	sync(player, profile)
 	return true, levelsGained
@@ -73,7 +75,10 @@ end
 function ProgressionService.SpendCoins(player: Player, amount: number): (boolean, string?)
 	local profile = DataService.GetProfile(player)
 	if not profile then return false, "ProfileUnavailable" end
-	local cost = math.floor(amount)
+	if typeof(amount) ~= "number" or amount ~= amount or amount == math.huge or amount ~= math.floor(amount) then
+		return false, "InvalidAmount"
+	end
+	local cost = amount
 	if cost <= 0 then return false, "InvalidAmount" end
 	if profile.Coins < cost then return false, "InsufficientCoins" end
 	profile.Coins -= cost
