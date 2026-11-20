@@ -17,7 +17,7 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Temporarily disable API access and confirm a load failure does not overwrite existing cloud data.
 - [ ] Leave and rejoin during autosave; check Output for DataStore errors.
 - [ ] Test server shutdown with multiple players connected.
-- [ ] Confirm existing schema-v3 profiles load without loss of their current fields.
+- [ ] Confirm existing schema-v3 profiles migrate to schema v4 without loss of current fields; missing Memory Crystals and Void Essence balances initialize to zero.
 - [ ] Confirm a profile with a newer schema version is refused without being downgraded.
 - [ ] Confirm an unexpected non-table stored value is not overwritten with a default profile.
 - [ ] Start two servers with the same test account; confirm the second cannot acquire the unexpired session lock.
@@ -78,6 +78,17 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Completed quests cannot be claimed twice.
 - [ ] NPC interactions require the correct island and a distance of at most 14 studs.
 - [ ] Verify quest XP and coin rewards update player attributes.
+
+## Currency and economy
+
+- [ ] New profiles start with 0 Coins, 0 Skill Points, 0 Memory Crystals and 0 Void Essence.
+- [ ] Existing schema-v3 profiles keep their Coins and Skill Points and receive zero Memory Crystals and Void Essence during migration to schema v4.
+- [ ] Add/spend APIs for Coins, Skill Points, Memory Crystals and Void Essence accept only finite non-negative whole-number grants and positive whole-number spending.
+- [ ] Reject negative, fractional, NaN and infinite currency grants/spending.
+- [ ] Spending cannot reduce a balance below zero; insufficient funds return a failure result.
+- [ ] Currency balances are capped at the configured safe integer maximum and persist across rejoin.
+- [ ] HUD displays Coins, Skill Points, Memory Crystals and Void Essence and updates immediately when server attributes change.
+- [ ] No client remote can directly award or set currency balances.
 
 ## Skills and abilities
 
