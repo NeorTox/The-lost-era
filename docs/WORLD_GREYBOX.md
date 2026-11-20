@@ -9,7 +9,7 @@
 - Echo Battle Arena and Memory Training Island as separate special-area greyboxes.
 - A spawn pad and named destination spawn for every location.
 - Quest and shop location signs, a designated safe-zone marker, a boss arena platform and a hidden-treasure placeholder for each main island.
-- Three enemy spawn markers and one disabled boss spawn marker for each main island. Sunset Bay's three enemy markers are enabled for the starter roster; enemy markers on the other ten islands remain disabled.
+- Three enemy spawn markers and one boss spawn marker for each main island. Sunset Bay's three enemy markers and its Tide Warden boss marker are enabled; enemy and boss markers on the other ten islands remain disabled.
 - Static placeholder models for Mira and Toma on Sunset Bay, compatible with the current NPC proximity checks.
 
 This is intentionally a structural blockout. It is not final terrain, a finished biome, a built boss encounter or a treasure collection system.
