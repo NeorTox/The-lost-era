@@ -31,8 +31,8 @@ local function hasLineOfSight(character: Model, origin: Vector3, target: Model, 
 	return Workspace:Raycast(origin, destination - origin, params) == nil
 end
 
-function CombatService.TryAttack(player: Player, targetInstance: Instance): (boolean, string?)
-	if not targetInstance:IsA("Model") or not EnemyService.IsEnemyModel(targetInstance)
+function CombatService.TryAttack(player: Player, targetInstance: any): (boolean, string?)
+	if typeof(targetInstance) ~= "Instance" or not targetInstance:IsA("Model") or not EnemyService.IsEnemyModel(targetInstance)
 		or not targetInstance:IsDescendantOf(Workspace) then
 		return false, "InvalidTarget"
 	end
