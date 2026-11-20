@@ -98,6 +98,11 @@ local function runSpawnPoint(point: BasePart)
 
 		spawnedForPoint[point] = nil
 		runningPoints[point] = nil
+		-- If Enabled was toggled back on while this loop was winding down,
+		-- restart after releasing the running guard.
+		if point.Parent and point:GetAttribute("Enabled") ~= false then
+			task.defer(runSpawnPoint, point)
+		end
 	end)
 end
 
