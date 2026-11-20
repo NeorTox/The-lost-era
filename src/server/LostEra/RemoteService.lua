@@ -1,8 +1,8 @@
 --!strict
--- Creates client/server remotes and connects server-side validation.
-
+-- Creates remotes and routes requests through server-side validation.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CombatService = require(script.Parent.CombatService)
+local NPCService = require(script.Parent.NPCService)
 
 local RemoteService = {}
 
@@ -28,9 +28,26 @@ end
 
 function RemoteService.Init()
 	local folder = getFolder(ReplicatedStorage, "TheLostEraRemotes")
-	local attackRequest = getRemote(folder, "AttackRequest")
-	attackRequest.OnServerEvent:Connect(function(player: Player, target: Instance)
+	getRemote(folder, "AttackRequest").OnServerEvent:Connect(function(player: Player, target: Instance)
 		CombatService.TryAttack(player, target)
+	end)
+
+	local interactResult = getRemote(folder, "NPCInteractResult")
+	getRemote(folder, "NPCInteractRequest").OnServerEvent:Connect(function(player: Player, npcId: any)
+		local ok, status, payload = NPCService.Interact(player, npcId)
+		interactResult:FireClient(player, ok, status, payload)
+	end)
+
+	local claimResult = getRemote(folder, "QuestClaimResult")
+	getRemote(folder, "QuestClaimRequest").OnServerEvent:Connect(function(player: Player, npcId: any, questId: any)
+		local ok, status = NPCService.ClaimQuest(player, npcId, questId)
+		claimResult:FireClient(player, ok, status)
+	end)
+
+	local purchaseResult = getRemote(folder, "ShopPurchaseResult")
+	getRemote(folder, "ShopPurchaseRequest").OnServerEvent:Connect(function(player: Player, npcId: any, itemId: any, quantity: any)
+		local ok, status = NPCService.Purchase(player, npcId, itemId, quantity)
+		purchaseResult:FireClient(player, ok, status)
 	end)
 end
 
