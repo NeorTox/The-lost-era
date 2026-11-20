@@ -27,9 +27,16 @@ local MAX_CURRENCY_BALANCE = Config.MaxCurrencyBalance
 local VALID_ITEMS = {
 	HealthPotion = 99,
 	SmallCoinPouch = 99,
+	SlimeGel = 999,
+	DriftwoodScrap = 999,
+	TideShell = 999,
+	TideWardenSigil = 1,
 	TrainingBlade = 1,
 	BronzeSword = 1,
 	IronBlade = 1,
+}
+local VALID_BOSSES = {
+	TideWarden = true,
 }
 local VALID_SKILLS = {
 	PowerStrike = true,
@@ -55,6 +62,7 @@ local function defaultProfile()
 		CurrentIsland = "SunsetBay",
 		Inventory = { TrainingBlade = 1 },
 		CompletedQuests = {},
+		BossCompletions = {},
 		QuestProgress = {},
 		UnlockedSkills = { "PowerStrike" },
 		EquippedSkills = { "PowerStrike" },
@@ -146,6 +154,7 @@ local function sanitizeProfile(raw: any)
 	end
 	profile.Inventory = sanitizeInventory(raw.Inventory)
 	profile.CompletedQuests = sanitizeStringArray(raw.CompletedQuests)
+	profile.BossCompletions = sanitizeStringArray(raw.BossCompletions, VALID_BOSSES)
 	profile.QuestProgress = sanitizeQuestProgress(raw.QuestProgress)
 	local rawSkillPoints = if raw.SkillPoints == nil then math.max(0, profile.Level - 1) else raw.SkillPoints
 	profile.SkillPoints = math.clamp(sanitizeCurrency(rawSkillPoints), 0, Config.MaxLevel)
@@ -199,6 +208,7 @@ local function cloneProfile(profile: {[string]: any})
 	local snapshot = table.clone(profile)
 	snapshot.Inventory = table.clone(profile.Inventory)
 	snapshot.CompletedQuests = table.clone(profile.CompletedQuests)
+	snapshot.BossCompletions = table.clone(profile.BossCompletions)
 	snapshot.QuestProgress = table.clone(profile.QuestProgress)
 	snapshot.UnlockedSkills = table.clone(profile.UnlockedSkills)
 	snapshot.EquippedSkills = table.clone(profile.EquippedSkills)
