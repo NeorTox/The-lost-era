@@ -167,7 +167,8 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "EnemyNameplate"
 	billboard.Adornee = head
-	billboard.Size = UDim2.fromOffset(180, 48)
+	local isBoss = definition.IsBoss == true
+	billboard.Size = if isBoss then UDim2.fromOffset(200, 68) else UDim2.fromOffset(180, 48)
 	billboard.StudsOffset = Vector3.new(0, 2.1, 0)
 	billboard.AlwaysOnTop = true
 	billboard.MaxDistance = 110
@@ -190,10 +191,24 @@ local function createGeneratedTemplate(folder: Folder, definition: EnemyDefiniti
 	labelCorner.CornerRadius = UDim.new(0, 7)
 	labelCorner.Parent = label
 
+	if isBoss then
+		local phaseLabel = Instance.new("TextLabel")
+		phaseLabel.Name = "BossPhase"
+		phaseLabel.Position = UDim2.fromOffset(0, 24)
+		phaseLabel.Size = UDim2.new(1, 0, 0, 18)
+		phaseLabel.BackgroundTransparency = 1
+		phaseLabel.BorderSizePixel = 0
+		phaseLabel.Font = Enum.Font.GothamMedium
+		phaseLabel.Text = "PHASE I  •  AWAKENING"
+		phaseLabel.TextColor3 = Color3.fromRGB(135, 228, 232)
+		phaseLabel.TextScaled = true
+		phaseLabel.Parent = billboard
+	end
+
 	local healthTrack = Instance.new("Frame")
 	healthTrack.Name = "HealthTrack"
-	healthTrack.Position = UDim2.fromOffset(10, 30)
-	healthTrack.Size = UDim2.new(1, -20, 0, 10)
+	healthTrack.Position = UDim2.fromOffset(10, if isBoss then 48 else 30)
+	healthTrack.Size = UDim2.new(1, -20, 0, if isBoss then 12 else 10)
 	healthTrack.BackgroundColor3 = Color3.fromRGB(48, 54, 64)
 	healthTrack.BorderSizePixel = 0
 	healthTrack.ClipsDescendants = true
