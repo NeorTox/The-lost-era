@@ -74,4 +74,4 @@ Maximum level: **300**.
 
 ## Client controls
 
-Rojo maps `src/client` to `StarterPlayer/StarterPlayerScripts/LostEraClient`. The starter skill hotbar is mobile/touch friendly and also supports keyboard keys 1, 2 and 3. All skill effects and combat decisions remain server-authoritative.
+Rojo maps `src/client` to `StarterPlayer/StarterPlayerScripts/LostEraClient`. The skill interface includes a mobile/touch hotbar and a panel for unlocking and equipping abilities; desktop controls also support keyboard keys 1, 2 and 3. All skill effects and combat decisions remain server-authoritative.
