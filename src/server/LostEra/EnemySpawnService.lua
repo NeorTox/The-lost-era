@@ -36,7 +36,15 @@ local function runSpawnPoint(point: BasePart)
 			return
 		end
 
-		local safeLevel = if typeof(level) == "number" then math.floor(level) else island.EnemyLevelMin
+		local hasValidLevel = typeof(level) == "number"
+			and level == level
+			and level > -math.huge
+			and level < math.huge
+		local safeLevel = if hasValidLevel then math.floor(level) else island.EnemyLevelMin
+		if not hasValidLevel and level ~= nil then
+			warn("[TheLostEra] Spawn marker has a non-finite or invalid Level attribute:", point:GetFullName())
+			return
+		end
 		if safeLevel < island.EnemyLevelMin or safeLevel > island.EnemyLevelMax then
 			warn(string.format(
 				"[TheLostEra] Spawn level %d is outside %s enemy band (%d-%d): %s",
@@ -48,8 +56,11 @@ local function runSpawnPoint(point: BasePart)
 			))
 			return
 		end
-		local delaySeconds = if typeof(respawnSeconds) == "number" and respawnSeconds == respawnSeconds
-			then math.max(3, respawnSeconds)
+		local delaySeconds = if typeof(respawnSeconds) == "number"
+			and respawnSeconds == respawnSeconds
+			and respawnSeconds > -math.huge
+			and respawnSeconds < math.huge
+			then math.clamp(respawnSeconds, 3, 3600)
 			else 12
 		local currentEnemy: Model? = nil
 
