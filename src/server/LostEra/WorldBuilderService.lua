@@ -396,8 +396,12 @@ local function buildArea(
 		summonPoint.CanQuery = true
 		createBillboard(summonPoint, "BOSS CHALLENGE", Color3.fromRGB(165, 255, 247))
 
-		local prompt = summonPoint:FindFirstChildOfClass("ProximityPrompt")
-		if not prompt then
+		local existingPrompt = summonPoint:FindFirstChild("BossChallengePrompt")
+		local prompt: ProximityPrompt
+		if existingPrompt and existingPrompt:IsA("ProximityPrompt") then
+			prompt = existingPrompt
+		else
+			if existingPrompt then existingPrompt:Destroy() end
 			prompt = Instance.new("ProximityPrompt")
 			prompt.Name = "BossChallengePrompt"
 			prompt.Parent = summonPoint
