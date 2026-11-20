@@ -21,7 +21,8 @@ This is intentionally a structural blockout. It is not final terrain, a finished
 | `IslandSpawns/<LocationId>/Spawn` | Destination BasePart | PortalService and WorldBuilderService player placement |
 | `IslandPortals` | `DestinationIsland`, `DestinationSpawnName` | PortalService |
 | `EnemySpawnPoints` | `TemplateName`, `Level`, `IslandId`, `RespawnSeconds`, `Enabled` | EnemySpawnService |
-| `BossSpawnPoints` | `BossTemplateName`, `Level`, `IslandId`, `IsBoss`, `Enabled` | Future BossService |
+| `BossSpawnPoints` | `BossTemplateName`, `Level`, `IslandId`, `IsBoss`, `Enabled` | BossService reads enabled boss spawn markers |
+| `BossSummonPoints` | `BossId`, `IslandId`, `Enabled`, ProximityPrompt | BossService starts a validated encounter from the arena pedestal |
 | `NPCSpawnPoints` | `NpcId`, `IslandId` | Future NPC placement tooling |
 | `NPCs` | Model `NpcId`, `IslandId`, `HumanoidRootPart` or PrimaryPart | NPCService |
 | `QuestLocations` / `ShopLocations` | `IslandId`, `MarkerType` | Future quest/shop placement tooling |
@@ -45,7 +46,7 @@ For an art-authored replacement:
 3. Check the marker's `IslandId` and whole-number `Level` against the central Config island enemy band.
 4. Keep a marker disabled until its matching template is valid.
 
-The fallback rigs are simple R6 blockout models and are not final character art or animation assets. The other ten islands retain disabled enemy markers with explicit TODO template names. Their markers should only be enabled after the corresponding island roster is authored. Boss markers remain disabled until BossService is implemented.
+The fallback rigs are simple R6 blockout models and are not final character art or animation assets. The other ten islands retain disabled enemy markers with explicit TODO template names. Their markers should only be enabled after the corresponding island roster is authored. Sunset Bay's Tide Warden boss spawn and summon pedestal are enabled and connected to BossService. The other ten island boss markers and their summon prompts remain disabled until their boss definitions and encounters are authored.
 
 ## Rejoin and respawn placement
 
@@ -56,6 +57,8 @@ The fallback rigs are simple R6 blockout models and are not final character art 
 - After later character respawns, the current `CurrentIsland` attribute is used to place the character back at that location.
 
 The Central Area and special areas are valid world destinations, but not combat progression islands.
+
+The Sunset Bay boss marker is positioned over the boss arena platform. Its visible summon pedestal is placed beyond the safe-zone boundary; the server also checks the player's actual position before it accepts a challenge. See [BOSS_SYSTEM.md](BOSS_SYSTEM.md) for the Tide Warden encounter, phase and reward rules.
 
 Sunset Bay's starter enemy markers are positioned outside the generated safe zone and use levels 1, 12 and 24 for Training Slime, Driftwood Bandit and Tide Crab respectively. The starter roster and AI/drop behavior are documented in [ENEMY_SYSTEM.md](ENEMY_SYSTEM.md).
 
