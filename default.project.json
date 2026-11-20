@@ -7,6 +7,15 @@
       "LostEra": {
         "$path": "src/server/LostEra"
       }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "LostEraClient": {
+          "$path": "src/client"
+        }
+      }
     }
   }
 }
