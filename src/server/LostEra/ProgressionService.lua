@@ -14,6 +14,11 @@ local function sync(player: Player, profile)
 	player:SetAttribute("SkillPoints", profile.SkillPoints or 0)
 	local island = Config.GetIslandForLevel(profile.Level)
 	player:SetAttribute("RecommendedIsland", island.Id)
+	player:SetAttribute("RecommendedIslandName", island.Name)
+	player:SetAttribute("RecommendedIslandUnlockLevel", island.UnlockLevel)
+	player:SetAttribute("RecommendedEnemyLevelMin", island.EnemyLevelMin)
+	player:SetAttribute("RecommendedEnemyLevelMax", island.EnemyLevelMax)
+	player:SetAttribute("RecommendedBossLevel", island.BossLevel)
 end
 
 function ProgressionService.SyncPlayer(player: Player)
