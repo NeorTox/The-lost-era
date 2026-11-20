@@ -12,7 +12,7 @@
 - Three disabled enemy spawn markers and one disabled boss spawn marker for each main island.
 - Static placeholder models for Mira and Toma on Sunset Bay, compatible with the current NPC proximity checks.
 
-This is intentionally a structural blockout. It is not final terrain, a finished biome, a built boss encounter, a safe-zone damage system or a treasure collection system.
+This is intentionally a structural blockout. It is not final terrain, a finished biome, a built boss encounter or a treasure collection system.
 
 ## Workspace service contracts
 
@@ -25,7 +25,7 @@ This is intentionally a structural blockout. It is not final terrain, a finished
 | `NPCSpawnPoints` | `NpcId`, `IslandId` | Future NPC placement tooling |
 | `NPCs` | Model `NpcId`, `IslandId`, `HumanoidRootPart` or PrimaryPart | NPCService |
 | `QuestLocations` / `ShopLocations` | `IslandId`, `MarkerType` | Future quest/shop placement tooling |
-| `SafeZones` | `IslandId`, `SafeZoneId` | Future safe-zone enforcement |
+| `SafeZones` | `IslandId`, `SafeZoneId` | SafeZoneService tracks player proximity and sets `InSafeZone` |
  
 The portal destination IDs are:
 
@@ -61,7 +61,7 @@ The Central Area and special areas are valid world destinations, but not combat 
 
 The builder replaces only `Workspace/TheLostEraGeneratedWorld` each time it runs. Named service folders are reused, and generated service markers use the `Generated_` prefix. If custom Studio content is added under those same generated names, rename it before re-running the builder or the generated marker may be repositioned.
 
-Safe-zone markers and treasure placeholders are map metadata only; neither currently grants protection or rewards.
+Safe-zone markers are active: players within their location marker are protected from the implemented enemy AI, basic melee attacks and offensive skills. Healing Pulse remains usable. This is not a full PvP protection system. Treasure placeholders remain non-collectible until the exploration system is built.
 
 
 Safe-zone enforcement uses the marker bounds and currently governs the implemented PvE enemy AI, basic melee attacks and offensive skills. It does not imply future PvP protections.
