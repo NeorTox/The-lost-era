@@ -4,6 +4,7 @@
 local Workspace = game:GetService("Workspace")
 local EnemyService = require(script.Parent.EnemyService)
 local WeaponService = require(script.Parent.WeaponService)
+local BossService = require(script.Parent.BossService)
 
 local CombatService = {}
 local lastAttackAt: {[number]: number} = {}
@@ -67,6 +68,7 @@ function CombatService.TryAttack(player: Player, targetInstance: any): (boolean,
 	local level = math.max(1, math.floor(player:GetAttribute("Level") or 1))
 	local damage = math.floor((BASE_DAMAGE + level * DAMAGE_PER_LEVEL) * weapon.DamageMultiplier)
 	targetInstance:SetAttribute("LastHitUserId", player.UserId)
+	BossService.RecordDamage(player, targetInstance, damage)
 	enemyHumanoid:TakeDamage(damage)
 	return true, nil
 end
