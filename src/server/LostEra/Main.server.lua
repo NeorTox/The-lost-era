@@ -11,6 +11,8 @@ local CombatService = require(script.Parent.CombatService)
 local RemoteService = require(script.Parent.RemoteService)
 local EnemySpawnService = require(script.Parent.EnemySpawnService)
 local PortalService = require(script.Parent.PortalService)
+local SkillService = require(script.Parent.SkillService)
+local WeaponService = require(script.Parent.WeaponService)
 
 local function loadPlayer(player: Player)
 	local profile = DataService.LoadPlayer(player)
@@ -19,6 +21,9 @@ local function loadPlayer(player: Player)
 	end
 
 	ProgressionService.SyncPlayer(player)
+	SkillService.SyncPlayer(player)
+	SkillService.StartEnergyRegeneration(player)
+	WeaponService.SyncPlayer(player)
 	player:SetAttribute("CurrentIsland", profile.CurrentIsland)
 	print(string.format("[TheLostEra] Profile ready: %s (Level %d)", player.Name, profile.Level))
 end
@@ -34,6 +39,7 @@ end
 Players.PlayerRemoving:Connect(function(player)
 	QuestService.ReleasePlayer(player)
 	CombatService.ReleasePlayer(player)
+	SkillService.ReleasePlayer(player)
 	DataService.ReleasePlayer(player)
 end)
 
