@@ -12,6 +12,8 @@ local function sync(player: Player, profile)
 	player:SetAttribute("XPToNextLevel", if profile.Level >= Config.MaxLevel then 0 else Config.GetXPToNextLevel(profile.Level))
 	player:SetAttribute("Coins", profile.Coins)
 	player:SetAttribute("SkillPoints", profile.SkillPoints or 0)
+	player:SetAttribute("MemoryCrystals", profile.MemoryCrystals or 0)
+	player:SetAttribute("VoidEssence", profile.VoidEssence or 0)
 	local island = Config.GetIslandForLevel(profile.Level)
 	player:SetAttribute("RecommendedIsland", island.Id)
 	player:SetAttribute("RecommendedIslandName", island.Name)
@@ -34,7 +36,10 @@ function ProgressionService.AddXP(player: Player, amount: number): (boolean, num
 		return false, 0
 	end
 
-	local safeAmount = math.max(0, math.floor(amount))
+	if typeof(amount) ~= "number" or amount ~= amount or amount == math.huge or amount == -math.huge or amount < 0 then
+		return false, 0
+	end
+	local safeAmount = math.min(Config.MaxCurrencyBalance, math.floor(amount))
 	if safeAmount == 0 or profile.Level >= Config.MaxLevel then
 		return true, 0
 	end
@@ -61,34 +66,75 @@ function ProgressionService.AddXP(player: Player, amount: number): (boolean, num
 	return true, levelsGained
 end
 
-function ProgressionService.AddCoins(player: Player, amount: number): boolean
+local function isValidNonNegativeAmount(amount: any): boolean
+	return typeof(amount) == "number"
+		and amount == amount
+		and amount ~= math.huge
+		and amount ~= -math.huge
+		and amount >= 0
+end
+
+local function addBalance(player: Player, field: string, attribute: string, amount: any, maximum: number): boolean
 	local profile = DataService.GetProfile(player)
-	if not profile then
+	if not profile or not isValidNonNegativeAmount(amount) then
 		return false
 	end
-
-	local safeAmount = math.max(0, math.floor(amount))
+	local safeAmount = math.floor(amount)
 	if safeAmount == 0 then
 		return true
 	end
-
-	profile.Coins += safeAmount
-	player:SetAttribute("Coins", profile.Coins)
+	profile[field] = math.min(maximum, (tonumber(profile[field]) or 0) + safeAmount)
+	player:SetAttribute(attribute, profile[field])
 	return true
 end
 
-function ProgressionService.SpendCoins(player: Player, amount: number): (boolean, string?)
+local function spendBalance(player: Player, field: string, attribute: string, amount: any): (boolean, string?)
 	local profile = DataService.GetProfile(player)
-	if not profile then return false, "ProfileUnavailable" end
-	if typeof(amount) ~= "number" or amount ~= amount or amount == math.huge or amount ~= math.floor(amount) then
+	if not profile then
+		return false, "ProfileUnavailable"
+	end
+	if not isValidNonNegativeAmount(amount) or amount ~= math.floor(amount) or amount <= 0 then
 		return false, "InvalidAmount"
 	end
-	local cost = amount
-	if cost <= 0 then return false, "InvalidAmount" end
-	if profile.Coins < cost then return false, "InsufficientCoins" end
-	profile.Coins -= cost
-	player:SetAttribute("Coins", profile.Coins)
+	local balance = tonumber(profile[field]) or 0
+	if balance < amount then
+		return false, "InsufficientFunds"
+	end
+	profile[field] = balance - amount
+	player:SetAttribute(attribute, profile[field])
 	return true, nil
+end
+
+function ProgressionService.AddCoins(player: Player, amount: number): boolean
+	return addBalance(player, "Coins", "Coins", amount, Config.MaxCurrencyBalance)
+end
+
+function ProgressionService.SpendCoins(player: Player, amount: number): (boolean, string?)
+	return spendBalance(player, "Coins", "Coins", amount)
+end
+
+function ProgressionService.AddSkillPoints(player: Player, amount: number): boolean
+	return addBalance(player, "SkillPoints", "SkillPoints", amount, Config.MaxLevel)
+end
+
+function ProgressionService.SpendSkillPoints(player: Player, amount: number): (boolean, string?)
+	return spendBalance(player, "SkillPoints", "SkillPoints", amount)
+end
+
+function ProgressionService.AddMemoryCrystals(player: Player, amount: number): boolean
+	return addBalance(player, "MemoryCrystals", "MemoryCrystals", amount, Config.MaxCurrencyBalance)
+end
+
+function ProgressionService.SpendMemoryCrystals(player: Player, amount: number): (boolean, string?)
+	return spendBalance(player, "MemoryCrystals", "MemoryCrystals", amount)
+end
+
+function ProgressionService.AddVoidEssence(player: Player, amount: number): boolean
+	return addBalance(player, "VoidEssence", "VoidEssence", amount, Config.MaxCurrencyBalance)
+end
+
+function ProgressionService.SpendVoidEssence(player: Player, amount: number): (boolean, string?)
+	return spendBalance(player, "VoidEssence", "VoidEssence", amount)
 end
 
 function ProgressionService.CanAccessIsland(player: Player, islandId: string): boolean
