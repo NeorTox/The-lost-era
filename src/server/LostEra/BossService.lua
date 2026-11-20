@@ -17,6 +17,7 @@ type BossEncounter = {
 	BossId: string,
 	IslandId: string,
 	Model: Model,
+	Arena: BasePart,
 	Marker: BasePart,
 	Prompt: ProximityPrompt,
 	Contributions: {[number]: number},
@@ -107,7 +108,19 @@ local function applyPhase(boss: Model, humanoid: Humanoid)
 	updatePhaseNameplate(boss, phase.Name, phase.Index)
 end
 
-local function findNearestTarget(boss: Model, islandId: string, maxDistance: number): (Player?, BasePart?, number)
+local function isInsideArena(position: Vector3, arena: BasePart): boolean
+	local localPosition = arena.CFrame:PointToObjectSpace(position)
+	local halfSize = arena.Size * 0.5
+	return math.abs(localPosition.X) <= halfSize.X
+		and math.abs(localPosition.Z) <= halfSize.Z
+end
+
+local function findNearestTarget(
+	boss: Model,
+	islandId: string,
+	arena: BasePart,
+	maxDistance: number
+): (Player?, BasePart?, number)
 	local bossRoot = boss:FindFirstChild("HumanoidRootPart")
 	if not bossRoot or not bossRoot:IsA("BasePart") then
 		return nil, nil, math.huge
@@ -128,6 +141,7 @@ local function findNearestTarget(boss: Model, islandId: string, maxDistance: num
 			and player:GetAttribute("CurrentIsland") == islandId
 			and player:GetAttribute("InSafeZone") ~= true
 			and not SafeZoneService.IsPlayerInSafeZone(player)
+			and isInsideArena(root.Position, arena)
 			and (root.Position - homePosition).Magnitude <= leash then
 			local distance = (root.Position - bossRoot.Position).Magnitude
 			if distance < nearestDistance then
@@ -166,7 +180,7 @@ local function runSpecialAttacks(encounter: BossEncounter)
 
 		local nextAttackAt = os.clock() + 4
 		while boss.Parent and humanoid.Health > 0 and not encounter.Settled do
-			local target, targetRoot = findNearestTarget(boss, encounter.IslandId, 110)
+			local target, targetRoot = findNearestTarget(boss, encounter.IslandId, encounter.Arena, 110)
 			if target and targetRoot and os.clock() >= nextAttackAt then
 				local radius = math.clamp(tonumber(boss:GetAttribute("SpecialRadius")) or 12, 6, 30)
 				local damage = math.clamp(math.floor(tonumber(boss:GetAttribute("SpecialDamage")) or 14), 1, 1000)
@@ -186,7 +200,8 @@ local function runSpecialAttacks(encounter: BossEncounter)
 						if playerHumanoid and playerHumanoid.Health > 0 and playerRoot and playerRoot:IsA("BasePart")
 							and player:GetAttribute("CurrentIsland") == encounter.IslandId
 							and player:GetAttribute("InSafeZone") ~= true
-							and not SafeZoneService.IsPlayerInSafeZone(player) then
+							and not SafeZoneService.IsPlayerInSafeZone(player)
+							and isInsideArena(playerRoot.Position, encounter.Arena) then
 							local horizontalOffset = Vector3.new(
 								playerRoot.Position.X - targetPosition.X,
 								0,
@@ -301,10 +316,15 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 	local definition = EnemyCatalog.Get(bossId)
 	local spawnFolder = Workspace:FindFirstChild("BossSpawnPoints")
 	local spawnMarker = spawnFolder and spawnFolder:FindFirstChild("Generated_" .. islandId)
+	local generatedWorld = Workspace:FindFirstChild("TheLostEraGeneratedWorld")
+	local islandModel = generatedWorld and generatedWorld:FindFirstChild(islandId)
+	local arenaInstance = islandModel and islandModel:FindFirstChild("BossArenaPlatform")
 	if not profile or not island or not definition or definition.IsBoss ~= true
-		or not spawnMarker or not spawnMarker:IsA("BasePart") then
+		or not spawnMarker or not spawnMarker:IsA("BasePart")
+		or not arenaInstance or not arenaInstance:IsA("BasePart") then
 		return
 	end
+	local arena: BasePart = arenaInstance
 	if player:GetAttribute("Level") == nil or profile.Level < island.EnemyLevelMax then
 		return
 	end
@@ -328,6 +348,8 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 			XPReward = 1,
 			CoinReward = 0,
 			DropChance = 0,
+			ArenaCenter = arena.Position,
+			ArenaSize = arena.Size,
 		}
 	)
 	if not boss then
@@ -342,6 +364,7 @@ local function startEncounter(player: Player, marker: BasePart, prompt: Proximit
 		BossId = bossId,
 		IslandId = islandId,
 		Model = boss,
+		Arena = arena,
 		Marker = marker,
 		Prompt = prompt,
 		Contributions = {},
