@@ -123,6 +123,7 @@ function EnemyService.Spawn(templateName: string, spawnCFrame: CFrame, level: nu
 	enemy:SetAttribute("IsLostEraEnemy", true)
 	enemy:SetAttribute("EnemyLevel", safeLevel)
 	enemy:SetAttribute("IslandId", islandId)
+	enemy:SetAttribute("IsBoss", isBoss)
 	enemy:SetAttribute("XPReward", math.max(1, math.floor(settings.XPReward or (15 + safeLevel * 5))))
 	enemy:SetAttribute("CoinReward", math.max(0, math.floor(settings.CoinReward or (5 + safeLevel * 2))))
 	enemy:SetAttribute("AggroRange", settings.AggroRange or 55)
