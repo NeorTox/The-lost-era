@@ -48,7 +48,7 @@ The current work focused on closing the most important early-game foundation gap
 - The canonical 11-island progression schedule is centralized in Config.lua; old island IDs fall back to the highest island unlocked by the saved player level.
 - Enemy spawn markers and enemy spawning now validate island IDs and level bands against the shared progression configuration.
 - Existing enemy and quest reward values plus shop prices are centralized in Config.Economy and validated at server startup; Memory Crystal and Void Essence are reserved for future systems.
-- WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems.
+- WorldBuilderService now generates the hub, all 11 main island greyboxes and both special areas, together with the Workspace folders and markers used by portals, player placement, NPCs, enemies and future boss systems. Enemy markers remain disabled until matching rig templates are authored.
 
 ## Verification boundary
 
