@@ -2,6 +2,7 @@
 -- Server-owned NPC interactions, quest claims and shop transactions.
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
+local Config = require(script.Parent.Config)
 local DataService = require(script.Parent.DataService)
 local ProgressionService = require(script.Parent.ProgressionService)
 local InventoryService = require(script.Parent.InventoryService)
@@ -23,11 +24,7 @@ local DEFINITIONS = {
 		IslandId = "SunsetBay",
 		DisplayName = "Toma, the Supply Merchant",
 		Dialogue = "Need supplies? I have essentials for the road.",
-		Shop = {
-			HealthPotion = { Price = 30, Stock = 99, RequiredLevel = 1 },
-			BronzeSword = { Price = 250, Stock = 1, RequiredLevel = 10 },
-			IronBlade = { Price = 900, Stock = 1, RequiredLevel = 30 },
-		},
+		Shop = Config.Economy.Shop,
 	},
 }
 
