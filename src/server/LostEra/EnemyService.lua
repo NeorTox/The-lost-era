@@ -48,12 +48,23 @@ local function hasLineOfSight(enemy: Model, targetCharacter: Model, origin: Vect
 	return Workspace:Raycast(origin, destination - origin, params) == nil
 end
 
+local function isInsideArena(position: Vector3, center: Vector3?, size: Vector3?): boolean
+	if not center or not size then
+		return true
+	end
+	local offset = position - center
+	local halfSize = size * 0.5
+	return math.abs(offset.X) <= halfSize.X and math.abs(offset.Z) <= halfSize.Z
+end
+
 local function findNearestPlayer(
 	position: Vector3,
 	islandId: string,
 	maxDistance: number,
 	homePosition: Vector3,
-	chaseLeash: number
+	chaseLeash: number,
+	arenaCenter: Vector3?,
+	arenaSize: Vector3?
 ): (Player?, number)
 	local nearest: Player? = nil
 	local nearestDistance = maxDistance
@@ -65,6 +76,7 @@ local function findNearestPlayer(
 			and player:GetAttribute("CurrentIsland") == islandId
 			and player:GetAttribute("InSafeZone") ~= true
 			and not SafeZoneService.IsPlayerInSafeZone(player)
+			and isInsideArena(root.Position, arenaCenter, arenaSize)
 			and (root.Position - homePosition).Magnitude <= chaseLeash then
 			local distance = (root.Position - position).Magnitude
 			if distance < nearestDistance then
@@ -93,6 +105,10 @@ local function startAI(enemy: Model)
 		local chaseLeash = boundedNumber(enemy:GetAttribute("ChaseLeash"), 100, 20, 500)
 		local homeValue = enemy:GetAttribute("HomePosition")
 		local homePosition = if typeof(homeValue) == "Vector3" then homeValue else root.Position
+		local arenaCenterValue = enemy:GetAttribute("ArenaCenter")
+		local arenaSizeValue = enemy:GetAttribute("ArenaSize")
+		local arenaCenter = if typeof(arenaCenterValue) == "Vector3" then arenaCenterValue else nil
+		local arenaSize = if typeof(arenaSizeValue) == "Vector3" then arenaSizeValue else nil
 		local nextAttackAt = 0
 
 		while enemy.Parent and humanoid.Health > 0 do
@@ -113,7 +129,9 @@ local function startAI(enemy: Model)
 				islandId,
 				aggroRange,
 				homePosition,
-				chaseLeash
+				chaseLeash,
+				arenaCenter,
+				arenaSize
 			)
 
 			if target and target.Character then
@@ -260,6 +278,10 @@ function EnemyService.Spawn(
 	enemy:SetAttribute("WalkSpeed", walkSpeed)
 	enemy:SetAttribute("ChaseLeash", chaseLeash)
 	enemy:SetAttribute("HomePosition", spawnCFrame.Position)
+	if typeof(settings.ArenaCenter) == "Vector3" and typeof(settings.ArenaSize) == "Vector3" then
+		enemy:SetAttribute("ArenaCenter", settings.ArenaCenter)
+		enemy:SetAttribute("ArenaSize", settings.ArenaSize)
+	end
 	enemy:SetAttribute("DropItemId", dropItemId)
 	enemy:SetAttribute("DropChance", dropChance)
 	enemy:SetAttribute("DropMin", dropMin)
