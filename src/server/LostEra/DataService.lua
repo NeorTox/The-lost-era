@@ -56,7 +56,6 @@ local function defaultProfile()
 		Inventory = { TrainingBlade = 1 },
 		CompletedQuests = {},
 		QuestProgress = {},
-		SkillPoints = 0,
 		UnlockedSkills = { "PowerStrike" },
 		EquippedSkills = { "PowerStrike" },
 		EquippedWeapon = "TrainingBlade",
@@ -146,11 +145,8 @@ local function sanitizeProfile(raw: any)
 	profile.Inventory = sanitizeInventory(raw.Inventory)
 	profile.CompletedQuests = sanitizeStringArray(raw.CompletedQuests)
 	profile.QuestProgress = sanitizeQuestProgress(raw.QuestProgress)
-	profile.SkillPoints = math.clamp(
-		math.floor(tonumber(raw.SkillPoints) or math.max(0, profile.Level - 1)),
-		0,
-		Config.MaxLevel
-	)
+	local rawSkillPoints = if raw.SkillPoints == nil then math.max(0, profile.Level - 1) else raw.SkillPoints
+	profile.SkillPoints = math.clamp(sanitizeCurrency(rawSkillPoints), 0, Config.MaxLevel)
 	profile.UnlockedSkills = sanitizeStringArray(raw.UnlockedSkills, VALID_SKILLS)
 	if not table.find(profile.UnlockedSkills, "PowerStrike") then
 		table.insert(profile.UnlockedSkills, "PowerStrike")
