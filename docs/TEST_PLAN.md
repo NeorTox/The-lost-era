@@ -41,6 +41,7 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Verify quest XP and coin rewards update player attributes.
 
 ## Skills and abilities
+- [ ] Unlock Whirlwind at level 12, Healing Pulse at level 20 and Arcane Burst at level 35, respecting skill-point costs.
 - [ ] A new profile has Power Strike unlocked and equipped, with 100 energy.
 - [ ] Each level gained grants one skill point; unlock costs and level requirements are enforced.
 - [ ] Only unlocked skills can be equipped; only equipped skills can be used.
@@ -49,6 +50,8 @@ These checks are intended for Roblox Studio. Static repository inspection does n
 - [ ] Power Strike, Whirlwind and Arcane Burst damage only nearby enemies on the current island.
 - [ ] Healing Pulse restores health but cannot exceed MaxHealth.
 - [ ] Skill unlocks, loadout and points survive rejoining.
+- [ ] Use the mobile SKILLS panel to unlock an eligible skill and assign it to an open/replacement slot.
+- [ ] Tap each mobile hotbar slot; on desktop, verify keyboard keys 1, 2 and 3 activate the corresponding equipped skills.
 - [ ] Repeated remote calls cannot bypass cooldowns, level requirements, energy or ownership checks.
 
 ## Portals and world
