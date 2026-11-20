@@ -132,6 +132,9 @@ function SkillService.Unlock(player: Player, skillId: any): (boolean, string?)
 
 	local spent, spendError = ProgressionService.SpendSkillPoints(player, cost)
 	if not spent then
+		if spendError == "InsufficientFunds" then
+			return false, "InsufficientSkillPoints"
+		end
 		return false, spendError or "InsufficientSkillPoints"
 	end
 	table.insert(profile.UnlockedSkills, skillId)
