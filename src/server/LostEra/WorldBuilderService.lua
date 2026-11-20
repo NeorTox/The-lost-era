@@ -359,19 +359,57 @@ local function buildArea(
 	local bossTopY = bossCenter.Y + 4
 	if isMainIsland and index then
 		local island = Config.Islands[index]
+		local bossTemplateName = if locationId == "SunsetBay"
+			then "TideWarden"
+			else "TODO_" .. locationId .. "_Boss"
+		local bossEnabled = locationId == "SunsetBay"
 		ensureMarker(
 			ensureFolder(Workspace, "BossSpawnPoints"),
 			"Generated_" .. locationId,
 			Vector3.new(bossCenter.X, bossTopY + 2, bossCenter.Z),
 			{
 				IslandId = locationId,
-				BossTemplateName = "TODO_" .. locationId .. "_Boss",
+				BossTemplateName = bossTemplateName,
 				Level = island.BossLevel,
 				IsBoss = true,
-				Enabled = false,
+				Enabled = bossEnabled,
 				MarkerType = "BossSpawn",
 			}
 		)
+
+		local summonPoint = ensureMarker(
+			ensureFolder(Workspace, "BossSummonPoints"),
+			"Generated_" .. locationId,
+			bossCenter + Vector3.new(0, 8, -35),
+			{
+				IslandId = locationId,
+				BossId = bossTemplateName,
+				Enabled = bossEnabled,
+				MarkerType = "BossSummon",
+			},
+			Vector3.new(7, 7, 7)
+		)
+		summonPoint.Transparency = 0.08
+		summonPoint.Color = theme:Lerp(Color3.fromRGB(87, 231, 230), 0.6)
+		summonPoint.Material = Enum.Material.Neon
+		summonPoint.CanCollide = true
+		summonPoint.CanQuery = true
+		createBillboard(summonPoint, "BOSS CHALLENGE", Color3.fromRGB(165, 255, 247))
+
+		local prompt = summonPoint:FindFirstChildOfClass("ProximityPrompt")
+		if not prompt then
+			prompt = Instance.new("ProximityPrompt")
+			prompt.Name = "BossChallengePrompt"
+			prompt.Parent = summonPoint
+		end
+		prompt.ActionText = "Challenge"
+		prompt.ObjectText = if locationId == "SunsetBay" then "Tide Warden" else "Island Boss"
+		prompt.HoldDuration = 1
+		prompt.MaxActivationDistance = 12
+		prompt.RequiresLineOfSight = false
+		prompt.KeyboardKeyCode = Enum.KeyCode.E
+		prompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+		prompt.Enabled = bossEnabled
 	end
 
 	local treasurePosition = islandCenter + Vector3.new(-92, surfaceY + 2, 88)
@@ -619,6 +657,7 @@ function WorldBuilderService.Init()
 	local portalFolder = ensureFolder(Workspace, "IslandPortals")
 	ensureFolder(Workspace, "EnemySpawnPoints")
 	ensureFolder(Workspace, "BossSpawnPoints")
+	ensureFolder(Workspace, "BossSummonPoints")
 	ensureFolder(Workspace, "NPCSpawnPoints")
 	ensureFolder(Workspace, "NPCs")
 	ensureFolder(Workspace, "QuestLocations")
