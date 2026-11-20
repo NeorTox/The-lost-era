@@ -9,6 +9,9 @@ local MAX_STACK = 999
 local ItemDefinitions = {
 	HealthPotion = { DisplayName = "Health Potion", Stackable = true, MaxStack = 99 },
 	SmallCoinPouch = { DisplayName = "Small Coin Pouch", Stackable = true, MaxStack = 99 },
+	SlimeGel = { DisplayName = "Slime Gel", Stackable = true, MaxStack = 999 },
+	DriftwoodScrap = { DisplayName = "Driftwood Scrap", Stackable = true, MaxStack = 999 },
+	TideShell = { DisplayName = "Tide Shell", Stackable = true, MaxStack = 999 },
 	TrainingBlade = { DisplayName = "Training Blade", Stackable = false, MaxStack = 1, IsWeapon = true },
 	BronzeSword = { DisplayName = "Bronze Sword", Stackable = false, MaxStack = 1, IsWeapon = true },
 	IronBlade = { DisplayName = "Iron Blade", Stackable = false, MaxStack = 1, IsWeapon = true },
